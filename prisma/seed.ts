@@ -1,7 +1,20 @@
 import bcrypt from "bcryptjs";
 import { PrismaClient } from "@prisma/client";
 
-const prisma = new PrismaClient();
+function createClient() {
+  if (process.env.TURSO_DATABASE_URL) {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const { PrismaLibSql } = require("@prisma/adapter-libsql");
+    const adapter = new PrismaLibSql({
+      url: process.env.TURSO_DATABASE_URL,
+      authToken: process.env.TURSO_AUTH_TOKEN,
+    });
+    return new PrismaClient({ adapter } as ConstructorParameters<typeof PrismaClient>[0]);
+  }
+  return new PrismaClient();
+}
+
+const prisma = createClient();
 
 async function main() {
   // Create default admin
