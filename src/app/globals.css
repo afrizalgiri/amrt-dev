@@ -1,0 +1,57 @@
+@import "tailwindcss";
+
+@theme {
+  /* Primary Blue Palette */
+  --color-primary-50: #e6f0ff;
+  --color-primary-100: #b3d1ff;
+  --color-primary-200: #80b3ff;
+  --color-primary-300: #4d94ff;
+  --color-primary-400: #1a75ff;
+  --color-primary-500: #0066ff;
+  --color-primary-600: #0052cc;
+  --color-primary-700: #003d99;
+  --color-primary-800: #002966;
+  --color-primary-900: #001a4d;
+
+  /* Dark Surfaces */
+  --color-surface-950: #06060b;
+  --color-surface-900: #0a0a0f;
+  --color-surface-800: #111118;
+  --color-surface-700: #1a1a24;
+  --color-surface-600: #252530;
+  --color-surface-500: #32323f;
+
+  /* Glassmorphism */
+  --color-glass: rgba(255, 255, 255, 0.03);
+  --color-glass-border: rgba(255, 255, 255, 0.08);
+  --color-glass-hover: rgba(255, 255, 255, 0.06);
+}
+
+/* Smooth scroll behavior */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-surface-900);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-surface-600);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-primary-600);
+}
+
+/* Selection */
+::selection {
+  background-color: rgba(0, 102, 255, 0.3);
+  color: #ffffff;
+}

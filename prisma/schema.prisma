@@ -1,0 +1,39 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Admin {
+  id           String   @id @default(cuid())
+  username     String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+}
+
+model SiteConfig {
+  id             String @id @default(cuid())
+  siteName       String @default("AMRT.dev")
+  logoUrl        String @default("")
+  heroTitle      String @default("We Build Digital Experiences")
+  heroSubtitle   String @default("Agensi digital yang menghadirkan solusi teknologi premium untuk bisnis Anda.")
+  whatsappNumber String @default("6281234567890")
+  servicesJson   String @default("[]")
+}
+
+model Portfolio {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  imageUrl    String
+  category    String
+  techStack   String   @default("")
+  liveUrl     String   @default("")
+  order       Int      @default(0)
+  published   Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
