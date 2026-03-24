@@ -1,13 +1,15 @@
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import AdminSidebar from "@/components/admin/AdminSidebar";
+import { redirect } from "next/navigation";
 
 export default async function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  await auth();
+  const session = await auth();
+  if (!session) redirect("/login");
 
   const config = await prisma.siteConfig.findFirst();
   const logoUrl = config?.logoUrl && config.logoUrl !== "" ? config.logoUrl : "/logo.png";
