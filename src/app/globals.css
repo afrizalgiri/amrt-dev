@@ -55,3 +55,32 @@ html {
   background-color: rgba(0, 102, 255, 0.3);
   color: #ffffff;
 }
+
+/* Skeleton shimmer */
+@keyframes shimmer {
+  0% { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    rgba(255,255,255,0.03) 0px,
+    rgba(255,255,255,0.07) 150px,
+    rgba(255,255,255,0.03) 300px
+  );
+  background-size: 400px 100%;
+  animation: shimmer 1.4s ease-in-out infinite;
+}
+
+/* Animated gradient border */
+@keyframes gradient-border {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+.gradient-border {
+  background: linear-gradient(90deg, #0066ff, #4d94ff, #001a4d, #0066ff);
+  background-size: 300% 300%;
+  animation: gradient-border 3s ease infinite;
+}

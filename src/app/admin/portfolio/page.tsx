@@ -327,7 +327,7 @@ export default function AdminPortfolio() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-400 mb-1.5">
-                  Gambar
+                  Gambar / Video
                 </label>
                 <div className="flex items-center gap-3">
                   <label className="flex items-center gap-2 px-4 py-2.5 bg-surface-900 border border-glass-border rounded-lg text-sm text-gray-400 hover:text-white hover:border-primary-500/30 cursor-pointer transition-all">
@@ -335,12 +335,12 @@ export default function AdminPortfolio() {
                     {uploading ? "Uploading..." : "Upload"}
                     <input
                       type="file"
-                      accept="image/*"
+                      accept="image/*,video/mp4,video/webm"
                       onChange={handleUpload}
                       className="hidden"
                     />
                   </label>
-                  {form.imageUrl && (
+                  {form.imageUrl && !form.imageUrl.match(/\.(mp4|webm|mov)/i) && (
                     <div className="w-10 h-10 rounded-lg overflow-hidden bg-surface-900">
                       <Image
                         src={form.imageUrl}
@@ -358,9 +358,12 @@ export default function AdminPortfolio() {
                       setForm((p) => ({ ...p, imageUrl: e.target.value }))
                     }
                     className="flex-1 px-4 py-2.5 bg-surface-900 border border-glass-border rounded-lg text-white text-sm placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-primary-500/50 transition-all"
-                    placeholder="Atau masukkan URL gambar"
+                    placeholder="URL gambar atau video (.mp4/.webm) — hover-to-play otomatis"
                   />
                 </div>
+                <p className="text-[11px] text-gray-600 mt-1">
+                  Upload video .mp4/.webm → otomatis play saat hover di portfolio
+                </p>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
