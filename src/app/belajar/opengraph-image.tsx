@@ -5,9 +5,6 @@ export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
 export default async function Image() {
-  const inter = await fetch(
-    "https://fonts.gstatic.com/s/inter/v13/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuLyfAZ9hiJ-Ek-_EeA.woff"
-  ).then((r) => r.arrayBuffer());
 
   return new ImageResponse(
     (
@@ -72,7 +69,6 @@ export default async function Image() {
     ),
     {
       ...size,
-      fonts: [{ name: "Inter", data: inter, weight: 400, style: "normal" }],
     }
   );
 }

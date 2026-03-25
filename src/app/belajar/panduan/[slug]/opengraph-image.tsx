@@ -18,10 +18,6 @@ export default async function Image({ params }: Props) {
   const { slug } = await params;
   const guide = getGuide(slug);
 
-  const inter = await fetch(
-    "https://fonts.gstatic.com/s/inter/v13/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuLyfAZ9hiJ-Ek-_EeA.woff"
-  ).then((r) => r.arrayBuffer());
-
   const title = guide?.title ?? "Panduan Web";
   const description = guide?.description ?? "Belajar web development gratis";
   const category = guide ? (categoryLabel[guide.category] ?? guide.category) : "Guide";
@@ -118,7 +114,6 @@ export default async function Image({ params }: Props) {
     ),
     {
       ...size,
-      fonts: [{ name: "Inter", data: inter, weight: 400, style: "normal" }],
     }
   );
 }
