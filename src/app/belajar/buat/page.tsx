@@ -515,7 +515,7 @@ export default function BuatPage() {
       `📌 Template: *${tpl.name}*\n🌐 Nama Website: *${formData.namaWebsite||formData.namaBisnis||formData.namaToko||formData.nama||"-"}*\n` +
       `📱 WA saya: *${reqWa}*\n\nSaya sudah puas dengan hasilnya! Mohon di-approve kak 🙏`
     );
-    window.open(`https://wa.me/6281234567890?text=${msg}`, "_blank");
+    window.open(`https://wa.me/6283805753932?text=${msg}`, "_blank");
     setTimeout(() => {
       const iframe = document.getElementById("pf") as HTMLIFrameElement | null;
       if (iframe?.contentWindow) iframe.contentWindow.print();
