@@ -73,7 +73,7 @@ export default function Navbar({ siteName, logoUrl }: NavbarProps) {
                   href={link.href}
                   className="text-sm font-medium px-3 py-1.5 rounded-full bg-primary-500/10 text-primary-400 border border-primary-500/20 hover:bg-primary-500/20 hover:text-primary-300 transition-all duration-300"
                 >
-                  ✨ {link.label}
+                  {link.label}
                 </a>
               ) : (
                 <a
@@ -117,7 +117,7 @@ export default function Navbar({ siteName, logoUrl }: NavbarProps) {
                   onClick={() => setMobileOpen(false)}
                   className={`py-2 transition-colors ${link.highlight ? "text-primary-400 font-medium" : "text-gray-400 hover:text-white"}`}
                 >
-                  {link.highlight ? `✨ ${link.label}` : link.label}
+                  {link.label}
                 </a>
               ))}
             </div>
