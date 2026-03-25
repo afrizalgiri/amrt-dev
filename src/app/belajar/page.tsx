@@ -55,7 +55,7 @@ export default function BelajarPage() {
             { value: `${totalMinutes}+`, label: "Menit belajar" },
             { value: "Gratis", label: "Selamanya" },
           ].map(({ value, label }) => (
-            <div key={label} className="px-6 py-5">
+            <div key={label} className="px-3 sm:px-6 py-5">
               <div className="text-xl font-bold text-white mb-1">{value}</div>
               <div className="text-xs text-gray-600">{label}</div>
             </div>

@@ -74,11 +74,11 @@ export default async function GuidePage({ params }: Props) {
             </span>
             <span className="text-xs text-gray-500">{guide.difficulty}</span>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-bold mb-4 flex items-center gap-3">
-            <GuideIcon className="w-8 h-8 flex-shrink-0 text-gray-400" />
-            {guide.title}
-          </h1>
-          <p className="text-gray-400 text-lg leading-relaxed">{guide.description}</p>
+          <div className="flex items-start gap-3 mb-4">
+            <GuideIcon className="w-7 h-7 flex-shrink-0 text-gray-500 mt-1" />
+            <h1 className="text-2xl sm:text-4xl font-bold leading-tight">{guide.title}</h1>
+          </div>
+          <p className="text-gray-400 text-base sm:text-lg leading-relaxed">{guide.description}</p>
         </div>
 
         {/* ── Progress indicator ── */}
@@ -153,7 +153,7 @@ export default async function GuidePage({ params }: Props) {
         </div>
 
         {/* ── Prev / Next ── */}
-        <div className="grid grid-cols-2 gap-4 mt-16 pt-8 border-t border-white/8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-16 pt-8 border-t border-white/8">
           {prev ? (() => {
             const PrevIcon = categoryIcon[prev.category] ?? Code2;
             const prevColor = (categoryColor[prev.category] ?? "text-gray-400").split(" ")[0];
@@ -176,11 +176,11 @@ export default async function GuidePage({ params }: Props) {
             const nextColor = (categoryColor[next.category] ?? "text-gray-400").split(" ")[0];
             return (
               <Link href={`/belajar/panduan/${next.slug}`}
-                className="group flex flex-col gap-1 p-4 rounded-xl border border-white/8 hover:border-white/20 hover:bg-white/3 transition-all text-right">
-                <span className="text-xs text-gray-500 flex items-center gap-1 justify-end">
+                className="group flex flex-col gap-1 p-4 rounded-xl border border-white/8 hover:border-white/20 hover:bg-white/3 transition-all sm:text-right">
+                <span className="text-xs text-gray-500 flex items-center gap-1 sm:justify-end">
                   Selanjutnya <ArrowRight className="w-3 h-3" />
                 </span>
-                <span className="font-medium text-sm text-gray-300 group-hover:text-white transition-colors flex items-center gap-2 justify-end">
+                <span className="font-medium text-sm text-gray-300 group-hover:text-white transition-colors flex items-center gap-2 sm:justify-end">
                   <NextIcon className={`w-4 h-4 flex-shrink-0 ${nextColor}`} />
                   {next.title}
                 </span>
@@ -188,11 +188,11 @@ export default async function GuidePage({ params }: Props) {
             );
           })() : (
             <Link href="/belajar/buat"
-              className="group flex flex-col gap-1 p-4 rounded-xl border border-white/8 bg-white/3 hover:bg-white/5 hover:border-white/15 transition-all text-right">
-              <span className="text-xs text-gray-500 flex items-center gap-1 justify-end">
+              className="group flex flex-col gap-1 p-4 rounded-xl border border-white/8 bg-white/3 hover:bg-white/5 hover:border-white/15 transition-all sm:text-right">
+              <span className="text-xs text-gray-500 flex items-center gap-1 sm:justify-end">
                 Selesai belajar! <ArrowRight className="w-3 h-3" />
               </span>
-              <span className="font-medium text-sm text-white flex items-center gap-2 justify-end">
+              <span className="font-medium text-sm text-white flex items-center gap-2 sm:justify-end">
                 <Rocket className="w-4 h-4 flex-shrink-0" />
                 Buat Website Sekarang
               </span>
