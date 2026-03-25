@@ -5,15 +5,18 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import Image from "next/image";
 
+interface NavLink { href: string; label: string; highlight?: boolean; }
+
 interface NavbarProps {
   siteName: string;
   logoUrl?: string;
 }
 
 const navLinks = [
-  { href: "#services", label: "Services" },
-  { href: "#portfolio", label: "Portfolio" },
-  { href: "#contact", label: "Contact" },
+  { href: "#services",   label: "Services" },
+  { href: "#portfolio",  label: "Portfolio" },
+  { href: "/belajar",    label: "Belajar", highlight: true },
+  { href: "#contact",    label: "Contact" },
 ];
 
 export default function Navbar({ siteName, logoUrl }: NavbarProps) {
@@ -63,15 +66,25 @@ export default function Navbar({ siteName, logoUrl }: NavbarProps) {
 
           {/* Desktop nav */}
           <div className="hidden sm:flex items-center gap-8">
-            {navLinks.map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                className="text-sm text-gray-400 hover:text-white transition-colors duration-300 relative group"
-              >
-                {link.label}
-                <span className="absolute -bottom-1 left-0 w-0 h-px bg-primary-400 group-hover:w-full transition-all duration-300" />
-              </a>
+            {navLinks.map((link: NavLink) => (
+              link.highlight ? (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  className="text-sm font-medium px-3 py-1.5 rounded-full bg-primary-500/10 text-primary-400 border border-primary-500/20 hover:bg-primary-500/20 hover:text-primary-300 transition-all duration-300"
+                >
+                  ✨ {link.label}
+                </a>
+              ) : (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  className="text-sm text-gray-400 hover:text-white transition-colors duration-300 relative group"
+                >
+                  {link.label}
+                  <span className="absolute -bottom-1 left-0 w-0 h-px bg-primary-400 group-hover:w-full transition-all duration-300" />
+                </a>
+              )
             ))}
           </div>
 
@@ -97,14 +110,14 @@ export default function Navbar({ siteName, logoUrl }: NavbarProps) {
             className="fixed top-16 left-0 right-0 z-40 bg-surface-900/95 backdrop-blur-xl border-b border-glass-border sm:hidden"
           >
             <div className="px-6 py-4 flex flex-col gap-4">
-              {navLinks.map((link) => (
+              {navLinks.map((link: NavLink) => (
                 <a
                   key={link.href}
                   href={link.href}
                   onClick={() => setMobileOpen(false)}
-                  className="text-gray-400 hover:text-white transition-colors py-2"
+                  className={`py-2 transition-colors ${link.highlight ? "text-primary-400 font-medium" : "text-gray-400 hover:text-white"}`}
                 >
-                  {link.label}
+                  {link.highlight ? `✨ ${link.label}` : link.label}
                 </a>
               ))}
             </div>
