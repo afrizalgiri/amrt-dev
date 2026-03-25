@@ -186,11 +186,10 @@ export default function Hero({ title, subtitle, siteName }: HeroProps) {
         </div>
       </div>
 
-      <div
-        ref={scrollRef}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-[2] opacity-0"
-      >
-        <ArrowDown className="w-5 h-5 text-gray-500" />
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-[2]">
+        <div ref={scrollRef} className="opacity-0">
+          <ArrowDown className="w-5 h-5 text-gray-500" />
+        </div>
       </div>
     </section>
   );
