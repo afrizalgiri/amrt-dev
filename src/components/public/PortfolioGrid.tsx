@@ -312,47 +312,64 @@ export default function PortfolioGrid({ items }: PortfolioGridProps) {
 
       <div className="max-w-6xl mx-auto px-6">
         {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-12"
-        >
-          <span className="inline-block px-4 py-1.5 mb-4 text-xs font-medium tracking-[0.2em] uppercase text-primary-400 border border-primary-500/20 rounded-full bg-primary-500/5">
+        <div className="text-center mb-12">
+          <motion.span
+            initial={{ opacity: 0, scale: 0.8, y: 10 }}
+            whileInView={{ opacity: 1, scale: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ type: "spring", stiffness: 300, damping: 24 }}
+            className="inline-block px-4 py-1.5 mb-4 text-xs font-medium tracking-[0.2em] uppercase text-primary-400 border border-primary-500/20 rounded-full bg-primary-500/5"
+          >
             Portfolio
-          </span>
-          <h2 className="text-3xl sm:text-4xl font-bold text-white mt-4">
+          </motion.span>
+          <motion.h2
+            initial={{ opacity: 0, y: 28, filter: "blur(8px)" }}
+            whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1], delay: 0.08 }}
+            className="text-3xl sm:text-4xl font-bold text-white mt-4"
+          >
             Karya{" "}
             <span className="bg-gradient-to-r from-primary-400 to-primary-200 bg-clip-text text-transparent">
               Terbaik Kami
             </span>
-          </h2>
-          <p className="mt-4 text-gray-400 max-w-2xl mx-auto">
+          </motion.h2>
+          <motion.p
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.18 }}
+            className="mt-4 text-gray-400 max-w-2xl mx-auto"
+          >
             Setiap proyek dikerjakan dengan standar kualitas tertinggi dan perhatian pada detail.
-          </p>
-        </motion.div>
+          </motion.p>
+        </div>
 
         {/* Filter tabs */}
         <motion.div
-          initial={{ opacity: 0, y: 10 }}
+          initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.4, delay: 0.2 }}
+          transition={{ duration: 0.4, delay: 0.25 }}
           className="flex flex-wrap justify-center gap-2 mb-12"
         >
-          {categories.map((cat) => (
-            <button
+          {categories.map((cat, i) => (
+            <motion.button
               key={cat}
+              initial={{ opacity: 0, scale: 0.85 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ type: "spring", stiffness: 360, damping: 26, delay: 0.3 + i * 0.05 }}
+              whileTap={{ scale: 0.93 }}
               onClick={() => setActive(cat)}
               className={`px-5 py-2 text-sm rounded-full transition-all duration-300 ${
                 active === cat
-                  ? "bg-primary-500 text-white shadow-[0_0_20px_rgba(0,102,255,0.3)]"
+                  ? "bg-primary-500 text-white shadow-[0_0_24px_rgba(0,102,255,0.4)]"
                   : "bg-glass border border-glass-border text-gray-400 hover:text-white hover:border-primary-500/30"
               }`}
             >
               {cat}
-            </button>
+            </motion.button>
           ))}
         </motion.div>
 
@@ -371,15 +388,16 @@ export default function PortfolioGrid({ items }: PortfolioGridProps) {
                 <motion.div
                   key={item.id}
                   layout
-                  initial={{ opacity: 0, y: 30, scale: 0.96 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.93, y: -10 }}
+                  initial={{ opacity: 0, y: 36, scale: 0.94, filter: "blur(6px)" }}
+                  animate={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
+                  exit={{ opacity: 0, scale: 0.92, y: -8, filter: "blur(4px)" }}
                   transition={{
                     type: "spring",
-                    stiffness: 300,
-                    damping: 28,
-                    mass: 0.8,
-                    delay: index * 0.06,
+                    stiffness: 280,
+                    damping: 26,
+                    mass: 0.9,
+                    delay: index * 0.07,
+                    filter: { duration: 0.3 },
                   }}
                   whileHover={{ y: -6, transition: { type: "spring", stiffness: 400, damping: 20 } }}
                   whileTap={{ scale: 0.97 }}

@@ -4,74 +4,63 @@ import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 
 export default function CustomCursor() {
-  const dotRef = useRef<HTMLDivElement>(null);
-  const ringRef = useRef<HTMLDivElement>(null);
+  const dotRef  = useRef<HTMLDivElement>(null);
+  const trailRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const dot = dotRef.current;
-    const ring = ringRef.current;
-    if (!dot || !ring) return;
+    const dot   = dotRef.current;
+    const trail = trailRef.current;
+    if (!dot || !trail) return;
     if (!window.matchMedia("(pointer: fine)").matches) return;
 
     document.body.style.cursor = "none";
-    gsap.set([dot, ring], { xPercent: -50, yPercent: -50 });
+    gsap.set([dot, trail], { xPercent: -50, yPercent: -50, opacity: 0 });
 
-    let mouseX = 0, mouseY = 0;
-    let ringX = 0, ringY = 0;
+    let mx = 0, my = 0;
+    let tx = 0, ty = 0;
     let rafId: number;
+    let visible = false;
 
-    // RAF loop dengan lerp — jauh lebih responsif dari GSAP tween
     const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
+
     const loop = () => {
-      ringX = lerp(ringX, mouseX, 0.18);
-      ringY = lerp(ringY, mouseY, 0.18);
-      gsap.set(ring, { x: ringX, y: ringY });
+      tx = lerp(tx, mx, 0.14);
+      ty = lerp(ty, my, 0.14);
+      gsap.set(trail, { x: tx, y: ty });
       rafId = requestAnimationFrame(loop);
     };
     loop();
 
     const onMove = (e: MouseEvent) => {
-      mouseX = e.clientX;
-      mouseY = e.clientY;
-      gsap.set(dot, { x: mouseX, y: mouseY });
+      mx = e.clientX;
+      my = e.clientY;
+      gsap.set(dot, { x: mx, y: my });
+      if (!visible) {
+        visible = true;
+        gsap.to([dot, trail], { opacity: 1, duration: 0.3 });
+      }
     };
 
-    const onEnter = (e: Event) => {
-      const target = e.currentTarget as HTMLElement;
-      const isBig = target.matches("a[href], button");
-      gsap.to(ring, {
-        scale: isBig ? 2.0 : 1.5,
-        borderColor: "rgba(99,153,255,0.9)",
-        backgroundColor: "rgba(0,102,255,0.06)",
-        duration: 0.25,
-        ease: "power2.out",
-      });
-      gsap.to(dot, { scale: 0.4, opacity: 0.5, duration: 0.2 });
+    const onEnter = () => {
+      gsap.to(dot,   { scale: 3.5, backgroundColor: "rgba(99,153,255,0.25)", duration: 0.25, ease: "power2.out" });
+      gsap.to(trail, { scale: 0.4, opacity: 0.3,  duration: 0.2 });
     };
-
     const onLeave = () => {
-      gsap.to(ring, {
-        scale: 1,
-        borderColor: "rgba(99,153,255,0.6)",
-        backgroundColor: "rgba(0,0,0,0)",
-        duration: 0.3,
-        ease: "power2.out",
-      });
-      gsap.to(dot, { scale: 1, opacity: 1, duration: 0.2 });
+      gsap.to(dot,   { scale: 1, backgroundColor: "rgb(99,153,255)", duration: 0.25, ease: "power2.out" });
+      gsap.to(trail, { scale: 1, opacity: 0.5, duration: 0.3 });
     };
-
     const onDown = () => {
-      gsap.to(ring, { scale: 0.75, duration: 0.12, ease: "power3.out" });
-      gsap.to(dot, { scale: 1.5, duration: 0.1 });
+      gsap.to(dot,   { scale: 0.7, duration: 0.1 });
+      gsap.to(trail, { scale: 1.4, duration: 0.15, ease: "power3.out" });
     };
     const onUp = () => {
-      gsap.to(ring, { scale: 1, duration: 0.2, ease: "elastic.out(1,0.5)" });
-      gsap.to(dot, { scale: 1, duration: 0.15 });
+      gsap.to(dot,   { scale: 1, duration: 0.2, ease: "elastic.out(1,0.4)" });
+      gsap.to(trail, { scale: 1, duration: 0.25, ease: "elastic.out(1,0.4)" });
     };
 
     window.addEventListener("mousemove", onMove);
     window.addEventListener("mousedown", onDown);
-    window.addEventListener("mouseup", onUp);
+    window.addEventListener("mouseup",   onUp);
 
     const interactives = document.querySelectorAll("a, button, [role='button']");
     interactives.forEach((el) => {
@@ -84,7 +73,7 @@ export default function CustomCursor() {
       document.body.style.cursor = "";
       window.removeEventListener("mousemove", onMove);
       window.removeEventListener("mousedown", onDown);
-      window.removeEventListener("mouseup", onUp);
+      window.removeEventListener("mouseup",   onUp);
       interactives.forEach((el) => {
         el.removeEventListener("mouseenter", onEnter);
         el.removeEventListener("mouseleave", onLeave);
@@ -94,13 +83,17 @@ export default function CustomCursor() {
 
   return (
     <>
+      {/* Dot utama — ikut instan */}
       <div
         ref={dotRef}
-        className="fixed top-0 left-0 w-[6px] h-[6px] bg-primary-400 rounded-full pointer-events-none z-[9999] [@media(pointer:coarse)]:hidden"
+        className="fixed top-0 left-0 w-[7px] h-[7px] rounded-full pointer-events-none z-[9999] [@media(pointer:coarse)]:hidden"
+        style={{ backgroundColor: "rgb(99,153,255)", willChange: "transform" }}
       />
+      {/* Trail — lag sedikit, lebih kecil & transparan */}
       <div
-        ref={ringRef}
-        className="fixed top-0 left-0 w-8 h-8 rounded-full pointer-events-none z-[9998] border border-primary-400/60 [@media(pointer:coarse)]:hidden"
+        ref={trailRef}
+        className="fixed top-0 left-0 w-5 h-5 rounded-full pointer-events-none z-[9998] [@media(pointer:coarse)]:hidden"
+        style={{ border: "1.5px solid rgba(99,153,255,0.5)", willChange: "transform" }}
       />
     </>
   );
