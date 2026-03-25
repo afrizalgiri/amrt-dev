@@ -11,41 +11,63 @@ export default function CustomCursor() {
     const dot = dotRef.current;
     const ring = ringRef.current;
     if (!dot || !ring) return;
-
-    // Hide default cursor only on pointer (mouse) devices
     if (!window.matchMedia("(pointer: fine)").matches) return;
-    document.body.style.cursor = "none";
 
-    // Set centering offset via GSAP so it doesn't conflict with x/y animations
+    document.body.style.cursor = "none";
     gsap.set([dot, ring], { xPercent: -50, yPercent: -50 });
 
-    let mouseX = 0;
-    let mouseY = 0;
+    let mouseX = 0, mouseY = 0;
+    let ringX = 0, ringY = 0;
+    let rafId: number;
+
+    // RAF loop dengan lerp — jauh lebih responsif dari GSAP tween
+    const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
+    const loop = () => {
+      ringX = lerp(ringX, mouseX, 0.18);
+      ringY = lerp(ringY, mouseY, 0.18);
+      gsap.set(ring, { x: ringX, y: ringY });
+      rafId = requestAnimationFrame(loop);
+    };
+    loop();
 
     const onMove = (e: MouseEvent) => {
       mouseX = e.clientX;
       mouseY = e.clientY;
-
-      // Dot follows instantly
-      gsap.to(dot, { x: mouseX, y: mouseY, duration: 0, ease: "none" });
-
-      // Ring follows with smooth lag
-      gsap.to(ring, { x: mouseX, y: mouseY, duration: 0.35, ease: "power2.out" });
+      gsap.set(dot, { x: mouseX, y: mouseY });
     };
 
-    // Hover effect on interactive elements
-    const onEnter = () => {
-      gsap.to(ring, { scale: 2.2, opacity: 0.6, duration: 0.3, ease: "power2.out" });
-      gsap.to(dot, { scale: 0, duration: 0.2 });
+    const onEnter = (e: Event) => {
+      const target = e.currentTarget as HTMLElement;
+      const isBig = target.matches("a[href], button");
+      gsap.to(ring, {
+        scale: isBig ? 2.0 : 1.5,
+        borderColor: "rgba(99,153,255,0.9)",
+        backgroundColor: "rgba(0,102,255,0.06)",
+        duration: 0.25,
+        ease: "power2.out",
+      });
+      gsap.to(dot, { scale: 0.4, opacity: 0.5, duration: 0.2 });
     };
 
     const onLeave = () => {
-      gsap.to(ring, { scale: 1, opacity: 1, duration: 0.3, ease: "power2.out" });
-      gsap.to(dot, { scale: 1, duration: 0.2 });
+      gsap.to(ring, {
+        scale: 1,
+        borderColor: "rgba(99,153,255,0.6)",
+        backgroundColor: "rgba(0,0,0,0)",
+        duration: 0.3,
+        ease: "power2.out",
+      });
+      gsap.to(dot, { scale: 1, opacity: 1, duration: 0.2 });
     };
 
-    const onDown = () => gsap.to(ring, { scale: 0.8, duration: 0.15 });
-    const onUp = () => gsap.to(ring, { scale: 1, duration: 0.15 });
+    const onDown = () => {
+      gsap.to(ring, { scale: 0.75, duration: 0.12, ease: "power3.out" });
+      gsap.to(dot, { scale: 1.5, duration: 0.1 });
+    };
+    const onUp = () => {
+      gsap.to(ring, { scale: 1, duration: 0.2, ease: "elastic.out(1,0.5)" });
+      gsap.to(dot, { scale: 1, duration: 0.15 });
+    };
 
     window.addEventListener("mousemove", onMove);
     window.addEventListener("mousedown", onDown);
@@ -58,6 +80,7 @@ export default function CustomCursor() {
     });
 
     return () => {
+      cancelAnimationFrame(rafId);
       document.body.style.cursor = "";
       window.removeEventListener("mousemove", onMove);
       window.removeEventListener("mousedown", onDown);
@@ -71,15 +94,13 @@ export default function CustomCursor() {
 
   return (
     <>
-      {/* Dot - hidden on touch devices */}
       <div
         ref={dotRef}
-        className="fixed top-0 left-0 w-2 h-2 bg-primary-400 rounded-full pointer-events-none z-[9999] mix-blend-difference [@media(pointer:coarse)]:hidden"
+        className="fixed top-0 left-0 w-[6px] h-[6px] bg-primary-400 rounded-full pointer-events-none z-[9999] [@media(pointer:coarse)]:hidden"
       />
-      {/* Ring - hidden on touch devices */}
       <div
         ref={ringRef}
-        className="fixed top-0 left-0 w-8 h-8 border border-primary-400/60 rounded-full pointer-events-none z-[9999] [@media(pointer:coarse)]:hidden"
+        className="fixed top-0 left-0 w-8 h-8 rounded-full pointer-events-none z-[9998] border border-primary-400/60 [@media(pointer:coarse)]:hidden"
       />
     </>
   );

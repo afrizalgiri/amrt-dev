@@ -158,21 +158,26 @@ function PortfolioModal({ item, onClose }: { item: PortfolioItem; onClose: () =>
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      transition={{ duration: 0.2 }}
+      transition={{ duration: 0.18 }}
     >
       {/* Backdrop */}
-      <div
-        className="absolute inset-0 bg-black/70 backdrop-blur-sm"
+      <motion.div
+        className="absolute inset-0 bg-black/75 backdrop-blur-md"
+        initial={{ backdropFilter: "blur(0px)" }}
+        animate={{ backdropFilter: "blur(12px)" }}
+        exit={{ backdropFilter: "blur(0px)" }}
+        transition={{ duration: 0.25 }}
         onClick={onClose}
       />
 
       {/* Modal panel */}
       <motion.div
-        className="relative z-10 w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-2xl bg-surface-900 border border-glass-border shadow-2xl"
-        initial={{ opacity: 0, y: 32, scale: 0.97 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        exit={{ opacity: 0, y: 16, scale: 0.97 }}
-        transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+        className="relative z-10 w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-2xl bg-surface-900 border border-glass-border shadow-[0_32px_80px_rgba(0,0,0,0.6)]"
+        initial={{ opacity: 0, y: 48, scale: 0.94, rotateX: 4 }}
+        animate={{ opacity: 1, y: 0, scale: 1, rotateX: 0 }}
+        exit={{ opacity: 0, y: 24, scale: 0.96 }}
+        transition={{ type: "spring", stiffness: 380, damping: 32, mass: 0.8 }}
+        style={{ transformPerspective: 1200 }}
       >
         {/* Close button */}
         <button
@@ -243,10 +248,13 @@ function PortfolioModal({ item, onClose }: { item: PortfolioItem; onClose: () =>
                 Stack & Infrastruktur
               </h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {infra.map((group) => (
-                  <div
+                {infra.map((group, i) => (
+                  <motion.div
                     key={group.label}
-                    className="flex items-start gap-3 p-3.5 rounded-xl bg-surface-800/60 border border-glass-border hover:border-primary-500/20 transition-colors"
+                    initial={{ opacity: 0, x: -12 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ type: "spring", stiffness: 350, damping: 28, delay: 0.1 + i * 0.055 }}
+                    className="flex items-start gap-3 p-3.5 rounded-xl bg-surface-800/60 border border-glass-border hover:border-primary-500/30 hover:bg-surface-800/80 transition-colors"
                   >
                     <div className="mt-0.5 p-1.5 rounded-lg bg-primary-500/10 text-primary-400 flex-shrink-0">
                       {group.icon}
@@ -265,7 +273,7 @@ function PortfolioModal({ item, onClose }: { item: PortfolioItem; onClose: () =>
                         ))}
                       </div>
                     </div>
-                  </div>
+                  </motion.div>
                 ))}
               </div>
             </div>
@@ -363,11 +371,20 @@ export default function PortfolioGrid({ items }: PortfolioGridProps) {
                 <motion.div
                   key={item.id}
                   layout
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                  transition={{ duration: 0.4, delay: index * 0.05 }}
-                  className="group relative rounded-2xl overflow-hidden border border-glass-border bg-glass backdrop-blur-sm cursor-pointer transition-all duration-300 hover:shadow-[0_0_40px_rgba(0,102,255,0.1)] hover:-translate-y-1"
+                  initial={{ opacity: 0, y: 30, scale: 0.96 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.93, y: -10 }}
+                  transition={{
+                    type: "spring",
+                    stiffness: 300,
+                    damping: 28,
+                    mass: 0.8,
+                    delay: index * 0.06,
+                  }}
+                  whileHover={{ y: -6, transition: { type: "spring", stiffness: 400, damping: 20 } }}
+                  whileTap={{ scale: 0.97 }}
+                  className="group relative rounded-2xl overflow-hidden border border-glass-border bg-glass backdrop-blur-sm cursor-pointer"
+                  style={{ boxShadow: "0 0 0 rgba(0,102,255,0)" }}
                   onClick={() => setSelected(item)}
                 >
                   {/* Hover border glow */}
