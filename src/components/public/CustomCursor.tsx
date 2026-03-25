@@ -12,7 +12,8 @@ export default function CustomCursor() {
     const ring = ringRef.current;
     if (!dot || !ring) return;
 
-    // Hide default cursor
+    // Hide default cursor only on pointer (mouse) devices
+    if (!window.matchMedia("(pointer: fine)").matches) return;
     document.body.style.cursor = "none";
 
     let mouseX = 0;
@@ -67,15 +68,15 @@ export default function CustomCursor() {
 
   return (
     <>
-      {/* Dot */}
+      {/* Dot - hidden on touch devices */}
       <div
         ref={dotRef}
-        className="fixed top-0 left-0 w-2 h-2 bg-primary-400 rounded-full pointer-events-none z-[9999] -translate-x-1/2 -translate-y-1/2 mix-blend-difference"
+        className="hidden [@media(pointer:fine)]:fixed top-0 left-0 w-2 h-2 bg-primary-400 rounded-full pointer-events-none z-[9999] -translate-x-1/2 -translate-y-1/2 mix-blend-difference"
       />
-      {/* Ring */}
+      {/* Ring - hidden on touch devices */}
       <div
         ref={ringRef}
-        className="fixed top-0 left-0 w-8 h-8 border border-primary-400/60 rounded-full pointer-events-none z-[9999] -translate-x-1/2 -translate-y-1/2"
+        className="hidden [@media(pointer:fine)]:fixed top-0 left-0 w-8 h-8 border border-primary-400/60 rounded-full pointer-events-none z-[9999] -translate-x-1/2 -translate-y-1/2"
       />
     </>
   );
