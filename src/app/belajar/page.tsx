@@ -1,150 +1,122 @@
 import Link from "next/link";
 import { guides } from "@/lib/guides";
-import { ArrowRight, Clock, BookOpen, Zap, Globe, Palette, Code2, Layers, Rocket } from "lucide-react";
+import { ArrowRight, Clock, Globe, Palette, Code2, Layers } from "lucide-react";
 
 export const metadata = { title: "Belajar Web Gratis | AMRT.dev" };
 
-const categoryColor: Record<string, string> = {
-  HTML:       "text-orange-400 bg-orange-500/10 border-orange-500/20",
-  CSS:        "text-blue-400 bg-blue-500/10 border-blue-500/20",
-  JavaScript: "text-yellow-400 bg-yellow-500/10 border-yellow-500/20",
-  Project:    "text-green-400 bg-green-500/10 border-green-500/20",
+const categoryIcon: Record<string, React.ElementType> = {
+  HTML: Globe, CSS: Palette, JavaScript: Code2, Project: Layers,
 };
 
-const categoryIcon: Record<string, React.ElementType> = {
-  HTML:       Globe,
-  CSS:        Palette,
-  JavaScript: Code2,
-  Project:    Layers,
+const categoryLabel: Record<string, string> = {
+  HTML: "HTML", CSS: "CSS", JavaScript: "JS", Project: "Project",
 };
 
 export default function BelajarPage() {
+  const totalMinutes = guides.reduce((a, g) => a + parseInt(g.duration), 0);
+
   return (
-    <main className="min-h-screen bg-[#030712] text-white">
+    <main className="min-h-screen bg-[#0a0a0a] text-white">
 
       {/* ── Hero ── */}
-      <section className="relative pt-32 pb-20 px-6 text-center overflow-hidden">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[400px] bg-primary-600/10 rounded-full blur-[120px] pointer-events-none" />
-        <div className="relative max-w-3xl mx-auto">
-          <span className="inline-block px-4 py-1.5 mb-5 text-xs font-medium tracking-[0.2em] uppercase text-primary-400 border border-primary-500/20 rounded-full bg-primary-500/5">
-            100% Gratis
-          </span>
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold leading-tight tracking-tight mb-6">
-            Belajar{" "}
-            <span className="bg-gradient-to-r from-primary-400 to-cyan-300 bg-clip-text text-transparent">
-              Buat Website
-            </span>
-            <br />dari Nol
-          </h1>
-          <p className="text-lg text-gray-400 max-w-xl mx-auto leading-relaxed mb-10">
-            Panduan lengkap HTML, CSS, dan JavaScript untuk pemula. Setelah belajar,
-            langsung coba buat website-mu sendiri dan lihat hasilnya!
+      <section className="pt-32 pb-20 px-6">
+        <div className="max-w-3xl mx-auto">
+          <p className="text-xs font-semibold uppercase tracking-[0.12em] text-gray-500 mb-5">
+            Panduan Gratis
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <h1 className="text-4xl sm:text-5xl font-800 leading-[1.08] tracking-tight mb-6 font-bold" style={{letterSpacing:"-1.5px"}}>
+            Belajar membuat website<br />dari nol.
+          </h1>
+          <p className="text-[17px] text-gray-500 max-w-lg leading-relaxed mb-10">
+            Panduan HTML, CSS, dan JavaScript untuk pemula. Gratis, langsung ke inti, tanpa omong kosong.
+          </p>
+          <div className="flex flex-wrap gap-3">
             <Link
               href="/belajar/panduan/html-dasar"
-              className="inline-flex items-center gap-2 px-8 py-3.5 bg-primary-500 hover:bg-primary-600 text-white font-medium rounded-lg transition-all duration-300 hover:shadow-[0_0_40px_rgba(0,102,255,0.4)] hover:scale-[1.03]"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-white text-black font-semibold rounded-lg text-sm transition-opacity hover:opacity-90"
             >
-              Mulai Belajar
-              <ArrowRight className="w-4 h-4" />
+              Mulai Belajar <ArrowRight className="w-4 h-4" />
             </Link>
             <Link
               href="/belajar/buat"
-              className="inline-flex items-center gap-2 px-8 py-3.5 border border-white/10 hover:border-primary-500/40 text-white font-medium rounded-lg transition-all duration-300 bg-white/5 hover:bg-white/8 hover:scale-[1.03]"
+              className="inline-flex items-center gap-2 px-6 py-3 border border-white/10 text-gray-400 font-medium rounded-lg text-sm transition-all hover:border-white/25 hover:text-white"
             >
-              Langsung Coba Builder
-              <Zap className="w-4 h-4" />
+              Coba Builder
             </Link>
           </div>
         </div>
       </section>
 
-      {/* ── Stat bar ── */}
-      <div className="max-w-4xl mx-auto px-6 mb-20">
-        <div className="grid grid-cols-3 gap-4 p-6 rounded-2xl bg-white/3 border border-white/8">
+      {/* ── Stats ── */}
+      <div className="max-w-3xl mx-auto px-6 mb-20">
+        <div className="grid grid-cols-3 divide-x divide-white/6 border border-white/6 rounded-xl overflow-hidden">
           {[
-            { label: "Panduan", value: `${guides.length}`, icon: BookOpen },
-            { label: "Menit Belajar", value: `${guides.reduce((a,g)=>a+parseInt(g.duration),0)}+`, icon: Clock },
-            { label: "Gratis Selamanya", value: "✓", icon: Zap },
-          ].map(({ label, value, icon: Icon }) => (
-            <div key={label} className="text-center">
-              <div className="flex justify-center mb-2">
-                <Icon className="w-5 h-5 text-primary-400" />
-              </div>
-              <div className="text-2xl font-bold text-white">{value}</div>
-              <div className="text-xs text-gray-500 mt-1">{label}</div>
+            { value: `${guides.length}`, label: "Panduan" },
+            { value: `${totalMinutes}+`, label: "Menit belajar" },
+            { value: "Gratis", label: "Selamanya" },
+          ].map(({ value, label }) => (
+            <div key={label} className="px-6 py-5">
+              <div className="text-xl font-bold text-white mb-1">{value}</div>
+              <div className="text-xs text-gray-600">{label}</div>
             </div>
           ))}
         </div>
       </div>
 
-      {/* ── Daftar Panduan ── */}
-      <section className="max-w-4xl mx-auto px-6 pb-24">
-        <h2 className="text-2xl font-bold mb-8 flex items-center gap-3">
-          <BookOpen className="w-6 h-6 text-primary-400" />
+      {/* ── Guide list ── */}
+      <section className="max-w-3xl mx-auto px-6 pb-24">
+        <h2 className="text-sm font-semibold uppercase tracking-[0.1em] text-gray-600 mb-6">
           Daftar Panduan
         </h2>
 
-        <div className="space-y-4">
+        <div className="divide-y divide-white/5 border border-white/6 rounded-xl overflow-hidden">
           {guides.map((guide, i) => {
-            const GuideIcon = categoryIcon[guide.category] ?? Code2;
-            const colorClass = categoryColor[guide.category] ?? "text-gray-400 bg-white/5 border-white/10";
-            const iconColor = colorClass.split(" ")[0]; // e.g. "text-orange-400"
+            const Icon = categoryIcon[guide.category] ?? Code2;
             return (
               <Link
                 key={guide.slug}
                 href={`/belajar/panduan/${guide.slug}`}
-                className="group flex items-center gap-5 p-5 rounded-2xl border border-white/8 bg-white/3 hover:bg-white/6 hover:border-primary-500/30 transition-all duration-300"
+                className="group flex items-center gap-4 px-5 py-4 bg-white/[0.02] hover:bg-white/[0.05] transition-colors"
               >
-                {/* Number */}
-                <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-primary-500/10 border border-primary-500/20 flex items-center justify-center text-primary-400 font-bold text-sm">
+                <span className="flex-shrink-0 w-7 text-xs font-medium text-gray-700 tabular-nums">
                   {String(i + 1).padStart(2, "0")}
+                </span>
+                <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-white/4 flex items-center justify-center">
+                  <Icon className="w-4 h-4 text-gray-400" />
                 </div>
-
-                {/* Icon + title */}
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-3 mb-1 flex-wrap">
-                    <GuideIcon className={`w-5 h-5 flex-shrink-0 ${iconColor}`} />
-                    <h3 className="font-semibold text-white group-hover:text-primary-200 transition-colors">
+                  <div className="flex items-center gap-2 mb-0.5">
+                    <span className="font-medium text-[15px] text-gray-100 group-hover:text-white transition-colors">
                       {guide.title}
-                    </h3>
-                    <span className={`hidden sm:inline-flex px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider rounded-full border ${colorClass}`}>
-                      {guide.category}
+                    </span>
+                    <span className="hidden sm:inline text-[10px] font-semibold uppercase tracking-wider text-gray-700 px-1.5 py-0.5 border border-white/6 rounded">
+                      {categoryLabel[guide.category] ?? guide.category}
                     </span>
                   </div>
-                  <p className="text-sm text-gray-500 truncate">{guide.description}</p>
+                  <p className="text-sm text-gray-600 truncate">{guide.description}</p>
                 </div>
-
-                {/* Meta */}
-                <div className="flex-shrink-0 flex items-center gap-4 text-xs text-gray-500">
-                  <span className="hidden sm:flex items-center gap-1">
+                <div className="flex-shrink-0 flex items-center gap-3 text-gray-700">
+                  <span className="hidden sm:flex items-center gap-1 text-xs">
                     <Clock className="w-3.5 h-3.5" />{guide.duration}
                   </span>
-                  <ArrowRight className="w-4 h-4 text-gray-600 group-hover:text-primary-400 group-hover:translate-x-1 transition-all" />
+                  <ArrowRight className="w-4 h-4 group-hover:text-gray-400 group-hover:translate-x-0.5 transition-all" />
                 </div>
               </Link>
             );
           })}
         </div>
 
-        {/* ── CTA Builder ── */}
-        <div className="mt-12 p-8 rounded-2xl bg-gradient-to-br from-primary-500/15 to-cyan-500/5 border border-primary-500/20 text-center">
-          <div className="flex justify-center mb-4">
-            <div className="w-12 h-12 rounded-2xl bg-primary-500/20 border border-primary-500/30 flex items-center justify-center">
-              <Rocket className="w-6 h-6 text-primary-400" />
-            </div>
+        {/* ── CTA ── */}
+        <div className="mt-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 px-5 py-5 border border-white/6 rounded-xl bg-white/[0.02]">
+          <div>
+            <p className="font-semibold text-white mb-1">Sudah baca panduan?</p>
+            <p className="text-sm text-gray-600">Langsung coba buat website sendiri dengan builder gratis.</p>
           </div>
-          <h3 className="text-xl font-bold mb-2">Sudah baca panduan? Saatnya praktek!</h3>
-          <p className="text-gray-400 text-sm mb-6 max-w-md mx-auto">
-            Pilih template, isi konten kamu, dan lihat langsung hasilnya.
-            Kalau puas, bisa langsung minta untuk dihosting!
-          </p>
           <Link
             href="/belajar/buat"
-            className="inline-flex items-center gap-2 px-8 py-3 bg-primary-500 hover:bg-primary-600 text-white font-medium rounded-lg transition-all duration-300 hover:shadow-[0_0_30px_rgba(0,102,255,0.4)] hover:scale-[1.03]"
+            className="flex-shrink-0 inline-flex items-center gap-2 px-5 py-2.5 bg-white text-black font-semibold rounded-lg text-sm transition-opacity hover:opacity-90 whitespace-nowrap"
           >
-            Buat Website Sekarang
-            <ArrowRight className="w-4 h-4" />
+            Buat Website <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
       </section>
