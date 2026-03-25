@@ -11,78 +11,11 @@ interface HeroProps {
 }
 
 export default function Hero({ title, subtitle, siteName }: HeroProps) {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const badgeRef = useRef<HTMLSpanElement>(null);
-  const titleRef = useRef<HTMLHeadingElement>(null);
+  const badgeRef    = useRef<HTMLSpanElement>(null);
+  const titleRef    = useRef<HTMLHeadingElement>(null);
   const subtitleRef = useRef<HTMLParagraphElement>(null);
-  const ctaRef = useRef<HTMLDivElement>(null);
-  const scrollRef = useRef<HTMLDivElement>(null);
-
-  // Particle canvas
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    let animationId: number;
-    const particles: {
-      x: number; y: number; size: number;
-      speedX: number; speedY: number; opacity: number;
-    }[] = [];
-
-    const resize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    };
-    resize();
-    window.addEventListener("resize", resize);
-
-    for (let i = 0; i < 60; i++) {
-      particles.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        size: Math.random() * 2 + 0.5,
-        speedX: (Math.random() - 0.5) * 0.5,
-        speedY: (Math.random() - 0.5) * 0.5,
-        opacity: Math.random() * 0.5 + 0.1,
-      });
-    }
-
-    const animate = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      particles.forEach((p, i) => {
-        p.x += p.speedX;
-        p.y += p.speedY;
-        if (p.x < 0 || p.x > canvas.width) p.speedX *= -1;
-        if (p.y < 0 || p.y > canvas.height) p.speedY *= -1;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(0, 102, 255, ${p.opacity})`;
-        ctx.fill();
-        for (let j = i + 1; j < particles.length; j++) {
-          const dx = p.x - particles[j].x;
-          const dy = p.y - particles[j].y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < 150) {
-            ctx.beginPath();
-            ctx.moveTo(p.x, p.y);
-            ctx.lineTo(particles[j].x, particles[j].y);
-            ctx.strokeStyle = `rgba(0, 102, 255, ${0.08 * (1 - dist / 150)})`;
-            ctx.lineWidth = 0.5;
-            ctx.stroke();
-          }
-        }
-      });
-      animationId = requestAnimationFrame(animate);
-    };
-    animate();
-
-    return () => {
-      cancelAnimationFrame(animationId);
-      window.removeEventListener("resize", resize);
-    };
-  }, []);
+  const ctaRef      = useRef<HTMLDivElement>(null);
+  const scrollRef   = useRef<HTMLDivElement>(null);
 
   // GSAP cinematic entrance
   useEffect(() => {
@@ -116,7 +49,6 @@ export default function Hero({ title, subtitle, siteName }: HeroProps) {
       "-=0.2"
     );
 
-    // Scroll bounce loop
     gsap.to(scrollRef.current, {
       y: 8, repeat: -1, yoyo: true, duration: 1,
       ease: "sine.inOut", delay: 2.2,
@@ -132,19 +64,118 @@ export default function Hero({ title, subtitle, siteName }: HeroProps) {
   return (
     <section
       id="hero"
-      className="relative min-h-screen flex items-center justify-center overflow-hidden"
+      className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#020510]"
     >
-      <div className="absolute inset-0 bg-gradient-to-b from-primary-900/20 via-surface-950 to-surface-950" />
-      <canvas ref={canvasRef} className="absolute inset-0 z-[1]" />
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary-500/10 rounded-full blur-[120px] z-[1]" />
+      {/* ── Aurora keyframes ── */}
+      <style>{`
+        @keyframes aurora-1 {
+          0%,100% { transform: translate(0,0) scale(1); }
+          33%      { transform: translate(80px,-60px) scale(1.15); }
+          66%      { transform: translate(-60px,40px) scale(0.9); }
+        }
+        @keyframes aurora-2 {
+          0%,100% { transform: translate(0,0) scale(1); }
+          40%      { transform: translate(-100px,80px) scale(1.2); }
+          75%      { transform: translate(60px,-50px) scale(0.85); }
+        }
+        @keyframes aurora-3 {
+          0%,100% { transform: translate(0,0) scale(1); }
+          30%      { transform: translate(120px,60px) scale(0.9); }
+          70%      { transform: translate(-80px,-80px) scale(1.1); }
+        }
+        @keyframes aurora-4 {
+          0%,100% { transform: translate(0,0) scale(1) rotate(0deg); }
+          50%      { transform: translate(40px,30px) scale(1.1) rotate(180deg); }
+        }
+        @keyframes grid-pulse {
+          0%,100% { opacity: 0.4; }
+          50%      { opacity: 0.7; }
+        }
+      `}</style>
 
+      {/* ── Aurora blobs ── */}
+      <div className="absolute inset-0 z-0">
+        {/* Blob 1 — blue center-top (dominan) */}
+        <div
+          className="absolute rounded-full"
+          style={{
+            width: "900px", height: "700px",
+            top: "-200px", left: "50%", marginLeft: "-450px",
+            background: "radial-gradient(ellipse at center, rgba(0,102,255,0.28) 0%, rgba(0,60,180,0.12) 50%, transparent 75%)",
+            filter: "blur(80px)",
+            animation: "aurora-1 28s ease-in-out infinite",
+          }}
+        />
+        {/* Blob 2 — indigo kiri */}
+        <div
+          className="absolute rounded-full"
+          style={{
+            width: "700px", height: "600px",
+            top: "10%", left: "-10%",
+            background: "radial-gradient(ellipse at center, rgba(79,70,229,0.22) 0%, rgba(55,48,163,0.1) 50%, transparent 75%)",
+            filter: "blur(90px)",
+            animation: "aurora-2 34s ease-in-out infinite",
+          }}
+        />
+        {/* Blob 3 — cyan kanan bawah */}
+        <div
+          className="absolute rounded-full"
+          style={{
+            width: "750px", height: "550px",
+            bottom: "-100px", right: "-100px",
+            background: "radial-gradient(ellipse at center, rgba(6,182,212,0.18) 0%, rgba(8,145,178,0.08) 50%, transparent 75%)",
+            filter: "blur(100px)",
+            animation: "aurora-3 38s ease-in-out infinite",
+          }}
+        />
+        {/* Blob 4 — purple accent tengah */}
+        <div
+          className="absolute rounded-full"
+          style={{
+            width: "500px", height: "400px",
+            top: "30%", left: "60%",
+            background: "radial-gradient(ellipse at center, rgba(139,92,246,0.14) 0%, transparent 70%)",
+            filter: "blur(70px)",
+            animation: "aurora-4 22s ease-in-out infinite",
+          }}
+        />
+        {/* Blob 5 — glow biru kecil kiri bawah */}
+        <div
+          className="absolute rounded-full"
+          style={{
+            width: "400px", height: "300px",
+            bottom: "15%", left: "5%",
+            background: "radial-gradient(ellipse at center, rgba(0,153,255,0.12) 0%, transparent 70%)",
+            filter: "blur(60px)",
+            animation: "aurora-2 26s ease-in-out infinite reverse",
+          }}
+        />
+      </div>
+
+      {/* ── Dot grid overlay ── */}
+      <div
+        className="absolute inset-0 z-[1]"
+        style={{
+          backgroundImage: "radial-gradient(rgba(147,197,253,0.12) 1px, transparent 1px)",
+          backgroundSize: "40px 40px",
+          animation: "grid-pulse 6s ease-in-out infinite",
+        }}
+      />
+
+      {/* ── Vignette / fade edges ── */}
+      <div className="absolute inset-0 z-[1] bg-[radial-gradient(ellipse_80%_60%_at_50%_50%,transparent_40%,rgba(2,5,16,0.7)_100%)]" />
+
+      {/* ── Bottom fade to next section ── */}
+      <div className="absolute bottom-0 left-0 right-0 h-40 z-[1] bg-gradient-to-t from-[#020510] to-transparent" />
+
+      {/* ── Content ── */}
       <div
         className="relative z-[2] text-center px-6 max-w-4xl mx-auto"
         style={{ perspective: "1200px" }}
       >
         <span
           ref={badgeRef}
-          className="inline-block px-4 py-1.5 mb-6 text-xs font-medium tracking-[0.2em] uppercase text-primary-300 border border-primary-500/20 rounded-full bg-primary-500/5 opacity-0"
+          className="inline-block px-4 py-1.5 mb-6 text-xs font-medium tracking-[0.2em] uppercase text-primary-300 border border-primary-500/25 rounded-full bg-primary-500/8 opacity-0 backdrop-blur-sm"
         >
           {siteName}
         </span>
@@ -154,7 +185,7 @@ export default function Hero({ title, subtitle, siteName }: HeroProps) {
           className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-tight tracking-tight"
           style={{ transformStyle: "preserve-3d" }}
         >
-          <span className="bg-gradient-to-r from-white via-white to-primary-300 bg-clip-text text-transparent">
+          <span className="bg-gradient-to-r from-white via-white to-primary-300 bg-clip-text text-transparent drop-shadow-[0_0_40px_rgba(0,102,255,0.3)]">
             {titleWords}
           </span>
         </h1>
@@ -172,23 +203,25 @@ export default function Hero({ title, subtitle, siteName }: HeroProps) {
         >
           <a
             href="#portfolio"
-            className="group inline-flex items-center gap-2 px-8 py-3.5 bg-primary-500 hover:bg-primary-600 text-white font-medium rounded-lg transition-all duration-300 hover:shadow-[0_0_40px_rgba(0,102,255,0.4)] hover:scale-[1.03] active:scale-[0.98]"
+            className="group inline-flex items-center gap-2 px-8 py-3.5 bg-primary-500 hover:bg-primary-600 text-white font-medium rounded-lg transition-all duration-300 hover:shadow-[0_0_50px_rgba(0,102,255,0.5)] hover:scale-[1.03] active:scale-[0.98]"
           >
             Lihat Portfolio
             <ArrowDown className="w-4 h-4 group-hover:translate-y-0.5 transition-transform" />
           </a>
           <a
             href="#contact"
-            className="inline-flex items-center gap-2 px-8 py-3.5 border border-glass-border hover:border-primary-500/30 text-white font-medium rounded-lg transition-all duration-300 bg-glass hover:bg-glass-hover hover:scale-[1.03] active:scale-[0.98]"
+            className="inline-flex items-center gap-2 px-8 py-3.5 border border-white/10 hover:border-primary-500/40 text-white font-medium rounded-lg transition-all duration-300 bg-white/5 hover:bg-white/8 hover:scale-[1.03] active:scale-[0.98] backdrop-blur-sm"
           >
             Hubungi Kami
           </a>
         </div>
       </div>
 
+      {/* ── Scroll indicator ── */}
       <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-[2]">
-        <div ref={scrollRef} className="opacity-0">
-          <ArrowDown className="w-5 h-5 text-gray-500" />
+        <div ref={scrollRef} className="opacity-0 flex flex-col items-center gap-1.5">
+          <span className="text-[10px] tracking-[0.2em] uppercase text-gray-600">Scroll</span>
+          <ArrowDown className="w-4 h-4 text-gray-600" />
         </div>
       </div>
     </section>
