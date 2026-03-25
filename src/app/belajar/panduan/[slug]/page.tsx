@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { guides, getGuide } from "@/lib/guides";
-import { ArrowLeft, ArrowRight, Clock, ChevronRight } from "lucide-react";
+import { ArrowLeft, ArrowRight, Clock, ChevronRight, Globe, Palette, Code2, Layers, Lightbulb, AlertTriangle, Rocket } from "lucide-react";
 
 interface Props { params: Promise<{ slug: string }> }
 
@@ -27,6 +27,13 @@ const categoryColor: Record<string, string> = {
   Project:    "text-green-400 bg-green-500/10 border-green-500/20",
 };
 
+const categoryIcon: Record<string, React.ElementType> = {
+  HTML:       Globe,
+  CSS:        Palette,
+  JavaScript: Code2,
+  Project:    Layers,
+};
+
 export default async function GuidePage({ params }: Props) {
   const { slug } = await params;
   const guide = getGuide(slug);
@@ -36,6 +43,10 @@ export default async function GuidePage({ params }: Props) {
   const idx   = sorted.findIndex((g) => g.slug === slug);
   const prev  = sorted[idx - 1];
   const next  = sorted[idx + 1];
+
+  const GuideIcon = categoryIcon[guide.category] ?? Code2;
+  const colorClass = categoryColor[guide.category] ?? "text-gray-400 bg-white/5 border-white/10";
+  const iconColor = colorClass.split(" ")[0];
 
   return (
     <main className="min-h-screen bg-[#030712] text-white">
@@ -56,7 +67,7 @@ export default async function GuidePage({ params }: Props) {
         {/* ── Guide header ── */}
         <div className="mb-10">
           <div className="flex items-center gap-3 mb-4 flex-wrap">
-            <span className={`px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider rounded-full border ${categoryColor[guide.category] ?? ""}`}>
+            <span className={`px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider rounded-full border ${colorClass}`}>
               {guide.category}
             </span>
             <span className="flex items-center gap-1 text-xs text-gray-500">
@@ -64,25 +75,29 @@ export default async function GuidePage({ params }: Props) {
             </span>
             <span className="text-xs text-gray-500">{guide.difficulty}</span>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-bold mb-4">
-            {guide.icon} {guide.title}
+          <h1 className="text-3xl sm:text-4xl font-bold mb-4 flex items-center gap-3">
+            <GuideIcon className={`w-8 h-8 flex-shrink-0 ${iconColor}`} />
+            {guide.title}
           </h1>
           <p className="text-gray-400 text-lg leading-relaxed">{guide.description}</p>
         </div>
 
         {/* ── Progress indicator ── */}
         <div className="flex items-center gap-2 mb-12 overflow-x-auto pb-2">
-          {sorted.map((g, i) => (
-            <Link key={g.slug} href={`/belajar/panduan/${g.slug}`}>
-              <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all border whitespace-nowrap ${
-                g.slug === slug
-                  ? "bg-primary-500 text-white border-primary-500"
-                  : "text-gray-500 border-white/10 hover:border-white/20 hover:text-gray-300"
-              }`}>
-                <span>{i + 1}.</span> {g.title}
-              </div>
-            </Link>
-          ))}
+          {sorted.map((g, i) => {
+            const StepIcon = categoryIcon[g.category] ?? Code2;
+            return (
+              <Link key={g.slug} href={`/belajar/panduan/${g.slug}`}>
+                <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all border whitespace-nowrap ${
+                  g.slug === slug
+                    ? "bg-primary-500 text-white border-primary-500"
+                    : "text-gray-500 border-white/10 hover:border-white/20 hover:text-gray-300"
+                }`}>
+                  <span>{i + 1}.</span> {g.title}
+                </div>
+              </Link>
+            );
+          })}
         </div>
 
         {/* ── Content sections ── */}
@@ -122,14 +137,14 @@ export default async function GuidePage({ params }: Props) {
 
             if (section.type === "tip") return (
               <div key={i} className="flex gap-3 p-4 rounded-xl bg-primary-500/8 border border-primary-500/20">
-                <span className="text-xl flex-shrink-0">💡</span>
+                <Lightbulb className="w-5 h-5 text-primary-400 flex-shrink-0 mt-0.5" />
                 <p className="text-primary-200 text-sm leading-relaxed">{section.content}</p>
               </div>
             );
 
             if (section.type === "warning") return (
               <div key={i} className="flex gap-3 p-4 rounded-xl bg-amber-500/8 border border-amber-500/20">
-                <span className="text-xl flex-shrink-0">⚠️</span>
+                <AlertTriangle className="w-5 h-5 text-amber-400 flex-shrink-0 mt-0.5" />
                 <p className="text-amber-200 text-sm leading-relaxed">{section.content}</p>
               </div>
             );
@@ -140,36 +155,47 @@ export default async function GuidePage({ params }: Props) {
 
         {/* ── Prev / Next ── */}
         <div className="grid grid-cols-2 gap-4 mt-16 pt-8 border-t border-white/8">
-          {prev ? (
-            <Link href={`/belajar/panduan/${prev.slug}`}
-              className="group flex flex-col gap-1 p-4 rounded-xl border border-white/8 hover:border-primary-500/30 hover:bg-white/3 transition-all">
-              <span className="text-xs text-gray-500 flex items-center gap-1">
-                <ArrowLeft className="w-3 h-3" /> Sebelumnya
-              </span>
-              <span className="font-medium text-sm text-gray-300 group-hover:text-white transition-colors">
-                {prev.icon} {prev.title}
-              </span>
-            </Link>
-          ) : <div />}
+          {prev ? (() => {
+            const PrevIcon = categoryIcon[prev.category] ?? Code2;
+            const prevColor = (categoryColor[prev.category] ?? "text-gray-400").split(" ")[0];
+            return (
+              <Link href={`/belajar/panduan/${prev.slug}`}
+                className="group flex flex-col gap-1 p-4 rounded-xl border border-white/8 hover:border-primary-500/30 hover:bg-white/3 transition-all">
+                <span className="text-xs text-gray-500 flex items-center gap-1">
+                  <ArrowLeft className="w-3 h-3" /> Sebelumnya
+                </span>
+                <span className="font-medium text-sm text-gray-300 group-hover:text-white transition-colors flex items-center gap-2">
+                  <PrevIcon className={`w-4 h-4 flex-shrink-0 ${prevColor}`} />
+                  {prev.title}
+                </span>
+              </Link>
+            );
+          })() : <div />}
 
-          {next ? (
-            <Link href={`/belajar/panduan/${next.slug}`}
-              className="group flex flex-col gap-1 p-4 rounded-xl border border-white/8 hover:border-primary-500/30 hover:bg-white/3 transition-all text-right">
-              <span className="text-xs text-gray-500 flex items-center gap-1 justify-end">
-                Selanjutnya <ArrowRight className="w-3 h-3" />
-              </span>
-              <span className="font-medium text-sm text-gray-300 group-hover:text-white transition-colors">
-                {next.icon} {next.title}
-              </span>
-            </Link>
-          ) : (
+          {next ? (() => {
+            const NextIcon = categoryIcon[next.category] ?? Code2;
+            const nextColor = (categoryColor[next.category] ?? "text-gray-400").split(" ")[0];
+            return (
+              <Link href={`/belajar/panduan/${next.slug}`}
+                className="group flex flex-col gap-1 p-4 rounded-xl border border-white/8 hover:border-primary-500/30 hover:bg-white/3 transition-all text-right">
+                <span className="text-xs text-gray-500 flex items-center gap-1 justify-end">
+                  Selanjutnya <ArrowRight className="w-3 h-3" />
+                </span>
+                <span className="font-medium text-sm text-gray-300 group-hover:text-white transition-colors flex items-center gap-2 justify-end">
+                  <NextIcon className={`w-4 h-4 flex-shrink-0 ${nextColor}`} />
+                  {next.title}
+                </span>
+              </Link>
+            );
+          })() : (
             <Link href="/belajar/buat"
               className="group flex flex-col gap-1 p-4 rounded-xl border border-primary-500/30 bg-primary-500/8 hover:bg-primary-500/15 transition-all text-right">
               <span className="text-xs text-primary-400 flex items-center gap-1 justify-end">
                 Selesai belajar! <ArrowRight className="w-3 h-3" />
               </span>
-              <span className="font-medium text-sm text-primary-200">
-                🚀 Buat Website Sekarang
+              <span className="font-medium text-sm text-primary-200 flex items-center gap-2 justify-end">
+                <Rocket className="w-4 h-4 flex-shrink-0" />
+                Buat Website Sekarang
               </span>
             </Link>
           )}

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { guides } from "@/lib/guides";
-import { ArrowRight, Clock, BookOpen, Zap } from "lucide-react";
+import { ArrowRight, Clock, BookOpen, Zap, Globe, Palette, Code2, Layers, Rocket } from "lucide-react";
 
 export const metadata = { title: "Belajar Web Gratis | AMRT.dev" };
 
@@ -9,6 +9,13 @@ const categoryColor: Record<string, string> = {
   CSS:        "text-blue-400 bg-blue-500/10 border-blue-500/20",
   JavaScript: "text-yellow-400 bg-yellow-500/10 border-yellow-500/20",
   Project:    "text-green-400 bg-green-500/10 border-green-500/20",
+};
+
+const categoryIcon: Record<string, React.ElementType> = {
+  HTML:       Globe,
+  CSS:        Palette,
+  JavaScript: Code2,
+  Project:    Layers,
 };
 
 export default function BelajarPage() {
@@ -73,50 +80,60 @@ export default function BelajarPage() {
 
       {/* ── Daftar Panduan ── */}
       <section className="max-w-4xl mx-auto px-6 pb-24">
-        <h2 className="text-2xl font-bold mb-8">
-          📚 Daftar Panduan
+        <h2 className="text-2xl font-bold mb-8 flex items-center gap-3">
+          <BookOpen className="w-6 h-6 text-primary-400" />
+          Daftar Panduan
         </h2>
 
         <div className="space-y-4">
-          {guides.map((guide, i) => (
-            <Link
-              key={guide.slug}
-              href={`/belajar/panduan/${guide.slug}`}
-              className="group flex items-center gap-5 p-5 rounded-2xl border border-white/8 bg-white/3 hover:bg-white/6 hover:border-primary-500/30 transition-all duration-300"
-            >
-              {/* Number */}
-              <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-primary-500/10 border border-primary-500/20 flex items-center justify-center text-primary-400 font-bold text-sm">
-                {String(i + 1).padStart(2, "0")}
-              </div>
-
-              {/* Icon + title */}
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-3 mb-1 flex-wrap">
-                  <span className="text-xl">{guide.icon}</span>
-                  <h3 className="font-semibold text-white group-hover:text-primary-200 transition-colors">
-                    {guide.title}
-                  </h3>
-                  <span className={`hidden sm:inline-flex px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider rounded-full border ${categoryColor[guide.category] ?? "text-gray-400 bg-white/5 border-white/10"}`}>
-                    {guide.category}
-                  </span>
+          {guides.map((guide, i) => {
+            const GuideIcon = categoryIcon[guide.category] ?? Code2;
+            const colorClass = categoryColor[guide.category] ?? "text-gray-400 bg-white/5 border-white/10";
+            const iconColor = colorClass.split(" ")[0]; // e.g. "text-orange-400"
+            return (
+              <Link
+                key={guide.slug}
+                href={`/belajar/panduan/${guide.slug}`}
+                className="group flex items-center gap-5 p-5 rounded-2xl border border-white/8 bg-white/3 hover:bg-white/6 hover:border-primary-500/30 transition-all duration-300"
+              >
+                {/* Number */}
+                <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-primary-500/10 border border-primary-500/20 flex items-center justify-center text-primary-400 font-bold text-sm">
+                  {String(i + 1).padStart(2, "0")}
                 </div>
-                <p className="text-sm text-gray-500 truncate">{guide.description}</p>
-              </div>
 
-              {/* Meta */}
-              <div className="flex-shrink-0 flex items-center gap-4 text-xs text-gray-500">
-                <span className="hidden sm:flex items-center gap-1">
-                  <Clock className="w-3.5 h-3.5" />{guide.duration}
-                </span>
-                <ArrowRight className="w-4 h-4 text-gray-600 group-hover:text-primary-400 group-hover:translate-x-1 transition-all" />
-              </div>
-            </Link>
-          ))}
+                {/* Icon + title */}
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-3 mb-1 flex-wrap">
+                    <GuideIcon className={`w-5 h-5 flex-shrink-0 ${iconColor}`} />
+                    <h3 className="font-semibold text-white group-hover:text-primary-200 transition-colors">
+                      {guide.title}
+                    </h3>
+                    <span className={`hidden sm:inline-flex px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider rounded-full border ${colorClass}`}>
+                      {guide.category}
+                    </span>
+                  </div>
+                  <p className="text-sm text-gray-500 truncate">{guide.description}</p>
+                </div>
+
+                {/* Meta */}
+                <div className="flex-shrink-0 flex items-center gap-4 text-xs text-gray-500">
+                  <span className="hidden sm:flex items-center gap-1">
+                    <Clock className="w-3.5 h-3.5" />{guide.duration}
+                  </span>
+                  <ArrowRight className="w-4 h-4 text-gray-600 group-hover:text-primary-400 group-hover:translate-x-1 transition-all" />
+                </div>
+              </Link>
+            );
+          })}
         </div>
 
         {/* ── CTA Builder ── */}
         <div className="mt-12 p-8 rounded-2xl bg-gradient-to-br from-primary-500/15 to-cyan-500/5 border border-primary-500/20 text-center">
-          <div className="text-4xl mb-4">🚀</div>
+          <div className="flex justify-center mb-4">
+            <div className="w-12 h-12 rounded-2xl bg-primary-500/20 border border-primary-500/30 flex items-center justify-center">
+              <Rocket className="w-6 h-6 text-primary-400" />
+            </div>
+          </div>
           <h3 className="text-xl font-bold mb-2">Sudah baca panduan? Saatnya praktek!</h3>
           <p className="text-gray-400 text-sm mb-6 max-w-md mx-auto">
             Pilih template, isi konten kamu, dan lihat langsung hasilnya.
