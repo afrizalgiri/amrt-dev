@@ -586,11 +586,12 @@ function ImageUpload({value,onChange}:{label:string;value:string;onChange:(b64:s
     <div onClick={()=>ref.current?.click()}
       onDragOver={e=>e.preventDefault()}
       onDrop={e=>{e.preventDefault();const f=e.dataTransfer.files[0];if(f)handleFile(f);}}
-      className="relative h-20 rounded-lg border border-dashed border-gray-300 hover:border-indigo-400 bg-gray-50 hover:bg-indigo-50/40 cursor-pointer transition-all flex flex-col items-center justify-center gap-1 overflow-hidden">
+      className="relative h-20 rounded-lg cursor-pointer transition-all flex flex-col items-center justify-center gap-1 overflow-hidden"
+      style={{border:"1.5px dashed rgba(124,58,237,0.35)",background:"rgba(124,58,237,0.06)"}}>
       {value?(
         <><img src={value} alt="preview" className="absolute inset-0 w-full h-full object-cover opacity-60"/><div className="relative z-10 text-[10px] text-white bg-black/50 px-2 py-0.5 rounded-full">Ganti</div></>
       ):(
-        <><Upload className="w-3.5 h-3.5 text-gray-400"/><span className="text-[10px] text-gray-400">Upload gambar</span></>
+        <><Upload className="w-3.5 h-3.5" style={{color:"rgba(167,139,250,0.6)"}}/><span className="text-[10px]" style={{color:"rgba(167,139,250,0.5)"}}>Upload gambar</span></>
       )}
       <input ref={ref} type="file" accept="image/*" className="hidden" onChange={e=>{const f=e.target.files?.[0];if(f)handleFile(f);}}/>
     </div>
@@ -601,13 +602,16 @@ function ImageUpload({value,onChange}:{label:string;value:string;onChange:(b64:s
 function Section({title,children,defaultOpen=false}:{title:string;children:React.ReactNode;defaultOpen?:boolean}) {
   const [open,setOpen]=useState(defaultOpen);
   return (
-    <div>
+    <div style={{borderBottom:"1px solid rgba(124,58,237,0.1)"}}>
       <button onClick={()=>setOpen(!open)}
-        className="w-full flex items-center justify-between px-5 py-2.5 hover:bg-gray-50 transition-colors group">
-        <span className="text-[11px] font-semibold text-gray-400 uppercase tracking-widest group-hover:text-gray-500">{title}</span>
-        <ChevronDown className={`w-3.5 h-3.5 text-gray-300 transition-transform duration-200 ${open?"rotate-180":""}`}/>
+        className="w-full flex items-center justify-between px-5 py-2.5 transition-colors group"
+        style={{background:"transparent"}}
+        onMouseEnter={e=>(e.currentTarget.style.background="rgba(124,58,237,0.05)")}
+        onMouseLeave={e=>(e.currentTarget.style.background="transparent")}>
+        <span className="text-[10px] font-semibold uppercase tracking-widest" style={{color:"rgba(167,139,250,0.55)"}}>{title}</span>
+        <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${open?"rotate-180":""}`} style={{color:"rgba(124,58,237,0.4)"}}/>
       </button>
-      {open && <div className="border-t border-gray-100">{children}</div>}
+      {open && <div style={{borderTop:"1px solid rgba(124,58,237,0.1)"}}>{children}</div>}
     </div>
   );
 }
@@ -638,39 +642,47 @@ export default function BuatPage() {
   };
 
   const renderField=(f:Field)=>{
-    const inp="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-gray-800 placeholder-gray-300 focus:outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-50 text-sm transition";
-    const row="flex items-start gap-3 px-5 py-2.5 border-b border-gray-100 last:border-0 hover:bg-gray-50/60 transition-colors";
-    const lbl="w-28 flex-shrink-0 text-sm text-gray-500 pt-1.5 leading-tight";
+    const inp="w-full px-3 py-2 rounded-lg text-sm transition text-white placeholder-gray-600 focus:outline-none";
+    const inpStyle={background:"rgba(124,58,237,0.07)",border:"1px solid rgba(124,58,237,0.2)",color:"#e5e7eb"};
+    const inpFocusStyle={border:"1px solid rgba(124,58,237,0.5)",boxShadow:"0 0 0 3px rgba(124,58,237,0.08)"};
+    const row="flex items-start gap-3 px-5 py-2.5 transition-colors";
+    const rowStyle={borderBottom:"1px solid rgba(124,58,237,0.08)"};
+    const lbl="w-28 flex-shrink-0 text-sm pt-1.5 leading-tight";
+    const lblStyle={color:"rgba(196,181,253,0.7)"};
     if(f.type==="image") return (
-      <div key={f.key} className={row}>
-        <span className={lbl}>{f.label}</span>
+      <div key={f.key} className={row} style={rowStyle}>
+        <span className={lbl} style={lblStyle}>{f.label}</span>
         <div className="flex-1"><ImageUpload label={f.label} value={formData[f.key]||""} onChange={v=>set(f.key,v)}/></div>
       </div>
     );
     if(f.type==="textarea") return (
-      <div key={f.key} className={row}>
-        <span className={lbl}>{f.label}</span>
+      <div key={f.key} className={row} style={rowStyle}>
+        <span className={lbl} style={lblStyle}>{f.label}</span>
         <div className="flex-1">
-          <textarea value={formData[f.key]||""} onChange={e=>set(f.key,e.target.value)} placeholder={f.placeholder} rows={3} className={inp+" resize-none"}/>
+          <textarea value={formData[f.key]||""} onChange={e=>set(f.key,e.target.value)} placeholder={f.placeholder} rows={3} className={inp+" resize-none"} style={inpStyle}
+            onFocus={e=>Object.assign(e.currentTarget.style,inpFocusStyle)} onBlur={e=>Object.assign(e.currentTarget.style,inpStyle)}/>
         </div>
       </div>
     );
     if(f.type==="color") return (
-      <div key={f.key} className={row}>
-        <span className={lbl}>{f.label}</span>
-        <div className="flex-1 flex items-center gap-2.5 px-3 py-2 bg-white border border-gray-200 rounded-lg cursor-pointer hover:border-indigo-300 transition">
+      <div key={f.key} className={row} style={rowStyle}>
+        <span className={lbl} style={lblStyle}>{f.label}</span>
+        <div className="flex-1 flex items-center gap-2.5 px-3 py-2 rounded-lg cursor-pointer transition" style={inpStyle}>
           <input type="color" value={formData[f.key]||"#111111"} onChange={e=>set(f.key,e.target.value)} className="w-6 h-6 rounded cursor-pointer border-0 bg-transparent flex-shrink-0"/>
-          <span className="text-xs text-gray-500 font-mono">{formData[f.key]||"#111111"}</span>
+          <span className="text-xs font-mono" style={{color:"rgba(196,181,253,0.6)"}}>{formData[f.key]||"#111111"}</span>
         </div>
       </div>
     );
     if(f.type==="select") return (
-      <div key={f.key} className={row}>
-        <span className={lbl}>{f.label}</span>
+      <div key={f.key} className={row} style={rowStyle}>
+        <span className={lbl} style={lblStyle}>{f.label}</span>
         <div className="flex-1 flex flex-wrap gap-1.5 pt-1">
           {f.options?.map(o=>(
             <button key={o.value} type="button" onClick={()=>set(f.key,o.value)}
-              className={`px-2.5 py-1 rounded-md text-xs font-medium border transition-all ${formData[f.key]===o.value?"bg-indigo-600 text-white border-indigo-600":"bg-white text-gray-500 border-gray-200 hover:border-indigo-300 hover:text-indigo-600"}`}>
+              className="px-2.5 py-1 rounded-md text-xs font-medium transition-all"
+              style={formData[f.key]===o.value
+                ?{background:"linear-gradient(135deg,#7c3aed,#06b6d4)",color:"#fff",border:"1px solid transparent"}
+                :{background:"rgba(124,58,237,0.06)",color:"rgba(196,181,253,0.6)",border:"1px solid rgba(124,58,237,0.2)"}}>
               {o.label}
             </button>
           ))}
@@ -678,35 +690,53 @@ export default function BuatPage() {
       </div>
     );
     return (
-      <div key={f.key} className={row}>
-        <span className={lbl}>{f.label}</span>
-        <div className="flex-1"><input value={formData[f.key]||""} onChange={e=>set(f.key,e.target.value)} placeholder={f.placeholder} className={inp}/></div>
+      <div key={f.key} className={row} style={rowStyle}>
+        <span className={lbl} style={lblStyle}>{f.label}</span>
+        <div className="flex-1"><input value={formData[f.key]||""} onChange={e=>set(f.key,e.target.value)} placeholder={f.placeholder} className={inp} style={inpStyle}
+          onFocus={e=>Object.assign(e.currentTarget.style,inpFocusStyle)} onBlur={e=>Object.assign(e.currentTarget.style,inpStyle)}/></div>
       </div>
     );
   };
 
+  const pageStyle={
+    background:"#07080e",
+    backgroundImage:"radial-gradient(ellipse at 10% 10%,rgba(124,58,237,0.18) 0%,transparent 45%),radial-gradient(ellipse at 90% 90%,rgba(6,182,212,0.1) 0%,transparent 45%),linear-gradient(rgba(255,255,255,0.018) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.018) 1px,transparent 1px)",
+    backgroundSize:"auto,auto,40px 40px,40px 40px",
+  };
+
   return (
-    <div className="h-screen flex flex-col bg-[#F9FAFB] text-gray-800 overflow-hidden">
+    <div className="h-screen flex flex-col overflow-hidden text-white" style={pageStyle}>
 
       {/* ── Topbar ── */}
-      <div className="flex-shrink-0 h-12 flex items-center justify-between px-4 bg-white border-b border-gray-200 z-50" style={{boxShadow:"0 1px 3px rgba(0,0,0,0.06)"}}>
+      <div className="flex-shrink-0 h-12 flex items-center justify-between px-4 z-50 backdrop-blur-xl"
+        style={{background:"rgba(7,8,14,0.88)",borderBottom:"1px solid rgba(124,58,237,0.22)"}}>
         <div className="flex items-center gap-3">
-          <Link href="/belajar" className="text-gray-400 hover:text-indigo-600 transition-colors p-1 rounded-md hover:bg-indigo-50">
+          <Link href="/belajar" className="p-1 rounded-md transition-colors" style={{color:"rgba(167,139,250,0.6)"}}>
             <ArrowLeft className="w-4 h-4"/>
           </Link>
-          <div className="w-px h-4 bg-gray-200"/>
-          <span className="text-sm font-semibold text-gray-700">{tpl.name}</span>
+          <div className="w-px h-4" style={{background:"rgba(124,58,237,0.25)"}}/>
+          <span className="text-sm font-semibold" style={{color:"rgba(229,231,235,0.9)"}}>{tpl.name}</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="flex sm:hidden items-center gap-0.5 bg-gray-100 rounded-lg p-1">
-            <button onClick={()=>setShowPanel("edit")} className={`px-3 py-1 text-xs font-medium rounded-md transition-all ${showPanel==="edit"?"bg-white text-gray-700 shadow-sm":"text-gray-500"}`}>Edit</button>
-            <button onClick={()=>setShowPanel("preview")} className={`px-3 py-1 text-xs font-medium rounded-md transition-all ${showPanel==="preview"?"bg-white text-gray-700 shadow-sm":"text-gray-500"}`}>Preview</button>
+          <div className="flex sm:hidden items-center gap-0.5 rounded-lg p-1" style={{background:"rgba(124,58,237,0.1)",border:"1px solid rgba(124,58,237,0.18)"}}>
+            <button onClick={()=>setShowPanel("edit")}
+              className="px-3 py-1 text-xs font-medium rounded-md transition-all"
+              style={showPanel==="edit"?{background:"rgba(124,58,237,0.35)",color:"#e9d5ff"}:{color:"rgba(167,139,250,0.45)"}}>Edit</button>
+            <button onClick={()=>setShowPanel("preview")}
+              className="px-3 py-1 text-xs font-medium rounded-md transition-all"
+              style={showPanel==="preview"?{background:"rgba(124,58,237,0.35)",color:"#e9d5ff"}:{color:"rgba(167,139,250,0.45)"}}>Preview</button>
           </div>
-          <div className="hidden sm:flex items-center gap-0.5 bg-gray-100 rounded-lg p-1">
-            <button onClick={()=>setPrevMode("desktop")} className={`p-1.5 rounded-md transition-all ${prevMode==="desktop"?"bg-white text-indigo-600 shadow-sm":"text-gray-400 hover:text-gray-600"}`}><Monitor className="w-3.5 h-3.5"/></button>
-            <button onClick={()=>setPrevMode("mobile")} className={`p-1.5 rounded-md transition-all ${prevMode==="mobile"?"bg-white text-indigo-600 shadow-sm":"text-gray-400 hover:text-gray-600"}`}><Smartphone className="w-3.5 h-3.5"/></button>
+          <div className="hidden sm:flex items-center gap-0.5 rounded-lg p-1" style={{background:"rgba(124,58,237,0.1)",border:"1px solid rgba(124,58,237,0.18)"}}>
+            <button onClick={()=>setPrevMode("desktop")}
+              className="p-1.5 rounded-md transition-all"
+              style={prevMode==="desktop"?{background:"rgba(124,58,237,0.35)",color:"#a78bfa"}:{color:"rgba(167,139,250,0.4)"}}><Monitor className="w-3.5 h-3.5"/></button>
+            <button onClick={()=>setPrevMode("mobile")}
+              className="p-1.5 rounded-md transition-all"
+              style={prevMode==="mobile"?{background:"rgba(124,58,237,0.35)",color:"#a78bfa"}:{color:"rgba(167,139,250,0.4)"}}><Smartphone className="w-3.5 h-3.5"/></button>
           </div>
-          <button onClick={()=>setShowModal(true)} className="flex items-center gap-1.5 px-3.5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold rounded-lg transition-all shadow-sm">
+          <button onClick={()=>setShowModal(true)}
+            className="flex items-center gap-1.5 px-3.5 py-2 text-white text-xs font-semibold rounded-lg transition-all"
+            style={{background:"linear-gradient(135deg,#7c3aed,#06b6d4)",boxShadow:"0 0 16px rgba(124,58,237,0.4)"}}>
             <Download className="w-3.5 h-3.5"/> Download
           </button>
         </div>
@@ -716,24 +746,28 @@ export default function BuatPage() {
       <div className="flex-1 flex overflow-hidden">
 
         {/* ── Sidebar ── */}
-        <aside className={`flex-shrink-0 w-72 xl:w-80 flex flex-col bg-white border-r border-gray-200 overflow-y-auto ${showPanel==="preview"?"hidden sm:flex":"flex"}`}>
-          <div className="flex-shrink-0 p-3 border-b border-gray-100">
-            <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-widest px-1 mb-2">Template</p>
+        <aside className={`flex-shrink-0 w-72 xl:w-80 flex flex-col overflow-y-auto ${showPanel==="preview"?"hidden sm:flex":"flex"}`}
+          style={{background:"rgba(7,8,14,0.72)",borderRight:"1px solid rgba(124,58,237,0.18)",backdropFilter:"blur(12px)"}}>
+          <div className="flex-shrink-0 p-3" style={{borderBottom:"1px solid rgba(124,58,237,0.14)"}}>
+            <p className="text-[10px] font-semibold uppercase tracking-widest px-1 mb-2" style={{color:"rgba(167,139,250,0.45)"}}>Template</p>
             <div className="grid grid-cols-2 gap-1.5">
               {TEMPLATES.map(t=>{
                 const TIcon=t.Icon;
                 const active=tid===t.id;
                 return (
                   <button key={t.id} onClick={()=>switchTemplate(t.id)}
-                    className={`flex items-center gap-2 px-3 py-2.5 rounded-lg text-left transition-all border text-xs font-medium ${active?"border-indigo-200 bg-indigo-50 text-indigo-700":"border-gray-100 bg-gray-50 text-gray-500 hover:bg-gray-100 hover:text-gray-700"}`}>
-                    <TIcon className="w-3.5 h-3.5 flex-shrink-0" style={{color:active?t.color:undefined}}/>
+                    className="flex items-center gap-2 px-3 py-2.5 rounded-lg text-left transition-all text-xs font-medium"
+                    style={active
+                      ?{background:"rgba(124,58,237,0.18)",border:"1px solid rgba(124,58,237,0.45)",color:"#e9d5ff",boxShadow:"0 0 12px rgba(124,58,237,0.2)"}
+                      :{background:"rgba(124,58,237,0.05)",border:"1px solid rgba(124,58,237,0.12)",color:"rgba(167,139,250,0.5)"}}>
+                    <TIcon className="w-3.5 h-3.5 flex-shrink-0" style={{color:active?t.color:"rgba(167,139,250,0.4)"}}/>
                     <span className="leading-tight">{t.name}</span>
                   </button>
                 );
               })}
             </div>
           </div>
-          <div className="flex-1 divide-y divide-gray-100">
+          <div className="flex-1">
             {tpl.groups.map((g,gi)=>(
               <Section key={g.title} title={g.title} defaultOpen={gi===0}>
                 {g.fields.map(f=>renderField(f))}
@@ -743,12 +777,14 @@ export default function BuatPage() {
         </aside>
 
         {/* ── Preview ── */}
-        <main className={`flex-1 flex flex-col bg-[#F3F4F6] overflow-hidden ${showPanel==="edit"&&"hidden sm:flex"}`}>
+        <main className={`flex-1 flex flex-col overflow-hidden ${showPanel==="edit"&&"hidden sm:flex"}`}
+          style={{background:"rgba(5,6,10,0.6)"}}>
           <div className="flex-1 flex items-start justify-center overflow-auto p-4 sm:p-6">
-            <div className={`transition-all duration-300 bg-white overflow-hidden ${prevMode==="mobile"?"w-[390px] rounded-[36px] border-[6px] border-gray-800":"w-full max-w-5xl rounded-xl border border-gray-200"}`}
+            <div className={`transition-all duration-300 overflow-hidden ${prevMode==="mobile"?"w-[390px] rounded-[36px]":"w-full max-w-5xl rounded-xl"}`}
               style={{
                 height:prevMode==="mobile"?"780px":"calc(100vh - 120px)",
-                boxShadow:prevMode==="mobile"?"0 24px 48px rgba(0,0,0,0.18)":"0 4px 24px rgba(0,0,0,0.08)",
+                border:prevMode==="mobile"?"6px solid rgba(124,58,237,0.5)":"1px solid rgba(124,58,237,0.2)",
+                boxShadow:prevMode==="mobile"?"0 24px 48px rgba(0,0,0,0.5),0 0 30px rgba(124,58,237,0.15)":"0 0 40px rgba(124,58,237,0.1)",
               }}>
               <iframe id="pf" srcDoc={html} className="w-full h-full border-0" title="Preview"/>
             </div>
@@ -758,31 +794,40 @@ export default function BuatPage() {
 
       {/* ── Modal ── */}
       {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
-          <div className="relative w-full max-w-md bg-white rounded-2xl p-6 shadow-2xl border border-gray-200">
-            <button onClick={()=>{setShowModal(false);setSent(false);}} className="absolute top-4 right-4 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-lg p-1 transition-colors"><X className="w-4 h-4"/></button>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-sm" style={{background:"rgba(0,0,0,0.6)"}}>
+          <div className="relative w-full max-w-md rounded-2xl p-6" style={{background:"rgba(10,11,20,0.95)",border:"1px solid rgba(124,58,237,0.35)",boxShadow:"0 0 60px rgba(124,58,237,0.2),0 24px 48px rgba(0,0,0,0.5)"}}>
+            <button onClick={()=>{setShowModal(false);setSent(false);}} className="absolute top-4 right-4 rounded-lg p-1 transition-colors" style={{color:"rgba(167,139,250,0.5)"}}><X className="w-4 h-4"/></button>
             {!sent?(
               <>
-                <h2 className="text-lg font-bold text-gray-800 mb-1">Download & Hosting</h2>
-                <p className="text-gray-500 text-sm mb-5 leading-relaxed">Isi data di bawah, pesan akan dikirim otomatis ke admin. Setelah konfirmasi, website siap di-download atau langsung dihosting.</p>
+                <h2 className="text-lg font-bold text-white mb-1">Download & Hosting</h2>
+                <p className="text-sm mb-5 leading-relaxed" style={{color:"rgba(156,163,175,0.8)"}}>Isi data di bawah, pesan akan dikirim otomatis ke admin. Setelah konfirmasi, website siap di-download atau langsung dihosting.</p>
                 <div className="space-y-3 mb-5">
                   <input value={reqName} onChange={e=>setReqName(e.target.value)} placeholder="Nama lengkap kamu"
-                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-800 placeholder-gray-400 focus:outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 text-sm transition"/>
+                    className="w-full px-4 py-3 rounded-xl text-white placeholder-gray-600 focus:outline-none text-sm transition"
+                    style={{background:"rgba(124,58,237,0.08)",border:"1px solid rgba(124,58,237,0.25)"}}
+                    onFocus={e=>{e.currentTarget.style.border="1px solid rgba(124,58,237,0.55)";e.currentTarget.style.boxShadow="0 0 0 3px rgba(124,58,237,0.1)"}}
+                    onBlur={e=>{e.currentTarget.style.border="1px solid rgba(124,58,237,0.25)";e.currentTarget.style.boxShadow="none"}}/>
                   <input value={reqWa} onChange={e=>setReqWa(e.target.value)} placeholder="Nomor WhatsApp kamu"
-                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-800 placeholder-gray-400 focus:outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 text-sm transition"/>
+                    className="w-full px-4 py-3 rounded-xl text-white placeholder-gray-600 focus:outline-none text-sm transition"
+                    style={{background:"rgba(124,58,237,0.08)",border:"1px solid rgba(124,58,237,0.25)"}}
+                    onFocus={e=>{e.currentTarget.style.border="1px solid rgba(124,58,237,0.55)";e.currentTarget.style.boxShadow="0 0 0 3px rgba(124,58,237,0.1)"}}
+                    onBlur={e=>{e.currentTarget.style.border="1px solid rgba(124,58,237,0.25)";e.currentTarget.style.boxShadow="none"}}/>
                 </div>
                 <button onClick={handleDownload} disabled={!reqName||!reqWa}
-                  className="w-full py-3 bg-[#25D366] hover:bg-[#1fb855] disabled:opacity-40 disabled:cursor-not-allowed text-white font-bold rounded-xl transition-all flex items-center justify-center gap-2 text-sm shadow-sm">
+                  className="w-full py-3 disabled:opacity-40 disabled:cursor-not-allowed text-white font-bold rounded-xl transition-all flex items-center justify-center gap-2 text-sm"
+                  style={{background:"#25D366",boxShadow:"0 0 20px rgba(37,211,102,0.25)"}}>
                   <Send className="w-4 h-4"/> Kirim ke Admin & Download
                 </button>
-                <p className="text-[11px] text-gray-400 text-center mt-3">100% Gratis · Chat langsung ke WhatsApp admin</p>
+                <p className="text-[11px] text-center mt-3" style={{color:"rgba(167,139,250,0.4)"}}>100% Gratis · Chat langsung ke WhatsApp admin</p>
               </>
             ):(
               <div className="text-center py-6">
-                <CheckCircle className="w-12 h-12 text-green-500 mx-auto mb-3"/>
-                <h2 className="text-lg font-bold text-gray-800 mb-2">Berhasil Dikirim!</h2>
-                <p className="text-gray-500 text-sm leading-relaxed mb-4">Admin akan konfirmasi via WhatsApp. Kamu juga bisa request hosting di chat yang sama.</p>
-                <button onClick={()=>{setShowModal(false);setSent(false);}} className="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm font-semibold transition-all">Tutup</button>
+                <CheckCircle className="w-12 h-12 mx-auto mb-3" style={{color:"#22d3ee"}}/>
+                <h2 className="text-lg font-bold text-white mb-2">Berhasil Dikirim!</h2>
+                <p className="text-sm leading-relaxed mb-4" style={{color:"rgba(156,163,175,0.8)"}}>Admin akan konfirmasi via WhatsApp. Kamu juga bisa request hosting di chat yang sama.</p>
+                <button onClick={()=>{setShowModal(false);setSent(false);}}
+                  className="px-6 py-2.5 text-white rounded-lg text-sm font-semibold transition-all"
+                  style={{background:"linear-gradient(135deg,#7c3aed,#06b6d4)"}}>Tutup</button>
               </div>
             )}
           </div>
