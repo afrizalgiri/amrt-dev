@@ -54,16 +54,23 @@ export default function CtaWhatsapp({
           transition={{ duration: 0.6, delay: 0.2 }}
           className="mt-10"
         >
-          <a
+          <motion.a
             href={waUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="group inline-flex items-center gap-3 px-8 py-4 bg-green-600 hover:bg-green-500 text-white font-semibold text-lg rounded-xl transition-all duration-300 hover:shadow-[0_0_40px_rgba(34,197,94,0.3)]"
+            whileHover={{ scale: 1.05, boxShadow: "0 0 48px rgba(34,197,94,0.35)" }}
+            whileTap={{ scale: 0.97 }}
+            className="group inline-flex items-center gap-3 px-8 py-4 bg-green-600 hover:bg-green-500 text-white font-semibold text-lg rounded-xl transition-colors duration-200"
           >
             <MessageCircle className="w-6 h-6" />
             Hubungi via WhatsApp
-            <ArrowUpRight className="w-5 h-5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-          </a>
+            <motion.span
+              animate={{ x: [0, 3, 0], y: [0, -3, 0] }}
+              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+            >
+              <ArrowUpRight className="w-5 h-5" />
+            </motion.span>
+          </motion.a>
         </motion.div>
       </div>
 

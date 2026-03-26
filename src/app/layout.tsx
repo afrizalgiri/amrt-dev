@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import CustomCursor from "@/components/public/CustomCursor";
+import SplashScreen from "@/components/public/SplashScreen";
 
 export const metadata: Metadata = {
   title: "AMRT.dev | Digital Agency Indonesia",
@@ -53,6 +54,7 @@ export default function RootLayout({
   return (
     <html lang="id" className="antialiased">
       <body className="bg-surface-950 text-white font-sans">
+        <SplashScreen />
         <CustomCursor />
         {children}
       </body>
