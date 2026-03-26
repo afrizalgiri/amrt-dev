@@ -579,22 +579,19 @@ const DEFAULTS:Record<string,Record<string,string>> = {
 };
 
 // ─── ImageUpload ────────────────────────────────────────────────────────────────
-function ImageUpload({label,value,onChange}:{label:string;value:string;onChange:(b64:string)=>void}) {
+function ImageUpload({value,onChange}:{label:string;value:string;onChange:(b64:string)=>void}) {
   const ref = useRef<HTMLInputElement>(null);
   const handleFile=(file:File)=>{ const r=new FileReader(); r.onload=(e)=>onChange(e.target?.result as string); r.readAsDataURL(file); };
   return (
-    <div>
-      <label className="block text-xs font-medium text-gray-600 mb-1.5">{label}</label>
-      <div onClick={()=>ref.current?.click()}
-        onDragOver={e=>e.preventDefault()}
-        onDrop={e=>{e.preventDefault();const f=e.dataTransfer.files[0];if(f)handleFile(f);}}
-        className="relative w-full h-24 rounded-lg border border-dashed border-gray-300 hover:border-indigo-400 bg-gray-50 hover:bg-indigo-50/40 cursor-pointer transition-all flex flex-col items-center justify-center gap-1.5 overflow-hidden">
-        {value?(
-          <><img src={value} alt="preview" className="absolute inset-0 w-full h-full object-cover opacity-60"/><div className="relative z-10 text-[11px] text-white bg-black/50 px-2.5 py-1 rounded-full">Klik untuk ganti</div></>
-        ):(
-          <><Upload className="w-4 h-4 text-gray-400"/><span className="text-[11px] text-gray-400">Klik atau drag gambar</span></>
-        )}
-      </div>
+    <div onClick={()=>ref.current?.click()}
+      onDragOver={e=>e.preventDefault()}
+      onDrop={e=>{e.preventDefault();const f=e.dataTransfer.files[0];if(f)handleFile(f);}}
+      className="relative h-20 rounded-lg border border-dashed border-gray-300 hover:border-indigo-400 bg-gray-50 hover:bg-indigo-50/40 cursor-pointer transition-all flex flex-col items-center justify-center gap-1 overflow-hidden">
+      {value?(
+        <><img src={value} alt="preview" className="absolute inset-0 w-full h-full object-cover opacity-60"/><div className="relative z-10 text-[10px] text-white bg-black/50 px-2 py-0.5 rounded-full">Ganti</div></>
+      ):(
+        <><Upload className="w-3.5 h-3.5 text-gray-400"/><span className="text-[10px] text-gray-400">Upload gambar</span></>
+      )}
       <input ref={ref} type="file" accept="image/*" className="hidden" onChange={e=>{const f=e.target.files?.[0];if(f)handleFile(f);}}/>
     </div>
   );
@@ -604,12 +601,13 @@ function ImageUpload({label,value,onChange}:{label:string;value:string;onChange:
 function Section({title,children,defaultOpen=false}:{title:string;children:React.ReactNode;defaultOpen?:boolean}) {
   const [open,setOpen]=useState(defaultOpen);
   return (
-    <div className="border-b border-gray-100">
-      <button onClick={()=>setOpen(!open)} className="w-full flex items-center justify-between px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider hover:bg-gray-50 transition-colors">
-        {title}
-        <ChevronDown className={`w-3.5 h-3.5 text-gray-400 transition-transform duration-200 ${open?"rotate-180":""}`}/>
+    <div>
+      <button onClick={()=>setOpen(!open)}
+        className="w-full flex items-center justify-between px-5 py-2.5 hover:bg-gray-50 transition-colors group">
+        <span className="text-[11px] font-semibold text-gray-400 uppercase tracking-widest group-hover:text-gray-500">{title}</span>
+        <ChevronDown className={`w-3.5 h-3.5 text-gray-300 transition-transform duration-200 ${open?"rotate-180":""}`}/>
       </button>
-      {open && <div className="px-4 pb-4 space-y-3">{children}</div>}
+      {open && <div className="border-t border-gray-100">{children}</div>}
     </div>
   );
 }
@@ -640,30 +638,39 @@ export default function BuatPage() {
   };
 
   const renderField=(f:Field)=>{
-    const base="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-gray-800 placeholder-gray-400 focus:outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 text-sm transition";
-    if(f.type==="image") return <ImageUpload key={f.key} label={f.label} value={formData[f.key]||""} onChange={v=>set(f.key,v)}/>;
+    const inp="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-gray-800 placeholder-gray-300 focus:outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-50 text-sm transition";
+    const row="flex items-start gap-3 px-5 py-2.5 border-b border-gray-100 last:border-0 hover:bg-gray-50/60 transition-colors";
+    const lbl="w-28 flex-shrink-0 text-sm text-gray-500 pt-1.5 leading-tight";
+    if(f.type==="image") return (
+      <div key={f.key} className={row}>
+        <span className={lbl}>{f.label}</span>
+        <div className="flex-1"><ImageUpload label={f.label} value={formData[f.key]||""} onChange={v=>set(f.key,v)}/></div>
+      </div>
+    );
     if(f.type==="textarea") return (
-      <div key={f.key}>
-        <label className="block text-xs font-medium text-gray-600 mb-1.5">{f.label}</label>
-        <textarea value={formData[f.key]||""} onChange={e=>set(f.key,e.target.value)} placeholder={f.placeholder} rows={3} className={base+" resize-none"}/>
+      <div key={f.key} className={row}>
+        <span className={lbl}>{f.label}</span>
+        <div className="flex-1">
+          <textarea value={formData[f.key]||""} onChange={e=>set(f.key,e.target.value)} placeholder={f.placeholder} rows={3} className={inp+" resize-none"}/>
+        </div>
       </div>
     );
     if(f.type==="color") return (
-      <div key={f.key}>
-        <label className="block text-xs font-medium text-gray-600 mb-1.5">{f.label}</label>
-        <div className="flex items-center gap-2.5 px-3 py-2 bg-white border border-gray-200 rounded-lg">
-          <input type="color" value={formData[f.key]||"#111111"} onChange={e=>set(f.key,e.target.value)} className="w-6 h-6 rounded cursor-pointer border-0 bg-transparent"/>
+      <div key={f.key} className={row}>
+        <span className={lbl}>{f.label}</span>
+        <div className="flex-1 flex items-center gap-2.5 px-3 py-2 bg-white border border-gray-200 rounded-lg cursor-pointer hover:border-indigo-300 transition">
+          <input type="color" value={formData[f.key]||"#111111"} onChange={e=>set(f.key,e.target.value)} className="w-6 h-6 rounded cursor-pointer border-0 bg-transparent flex-shrink-0"/>
           <span className="text-xs text-gray-500 font-mono">{formData[f.key]||"#111111"}</span>
         </div>
       </div>
     );
     if(f.type==="select") return (
-      <div key={f.key}>
-        <label className="block text-xs font-medium text-gray-600 mb-1.5">{f.label}</label>
-        <div className="flex flex-wrap gap-1.5">
+      <div key={f.key} className={row}>
+        <span className={lbl}>{f.label}</span>
+        <div className="flex-1 flex flex-wrap gap-1.5 pt-1">
           {f.options?.map(o=>(
             <button key={o.value} type="button" onClick={()=>set(f.key,o.value)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-all ${formData[f.key]===o.value?"bg-indigo-600 text-white border-indigo-600 shadow-sm":"bg-white text-gray-500 border-gray-200 hover:border-indigo-300 hover:text-indigo-600"}`}>
+              className={`px-2.5 py-1 rounded-md text-xs font-medium border transition-all ${formData[f.key]===o.value?"bg-indigo-600 text-white border-indigo-600":"bg-white text-gray-500 border-gray-200 hover:border-indigo-300 hover:text-indigo-600"}`}>
               {o.label}
             </button>
           ))}
@@ -671,9 +678,9 @@ export default function BuatPage() {
       </div>
     );
     return (
-      <div key={f.key}>
-        <label className="block text-xs font-medium text-gray-600 mb-1.5">{f.label}</label>
-        <input value={formData[f.key]||""} onChange={e=>set(f.key,e.target.value)} placeholder={f.placeholder} className={base}/>
+      <div key={f.key} className={row}>
+        <span className={lbl}>{f.label}</span>
+        <div className="flex-1"><input value={formData[f.key]||""} onChange={e=>set(f.key,e.target.value)} placeholder={f.placeholder} className={inp}/></div>
       </div>
     );
   };
@@ -726,7 +733,7 @@ export default function BuatPage() {
               })}
             </div>
           </div>
-          <div className="flex-1">
+          <div className="flex-1 divide-y divide-gray-100">
             {tpl.groups.map((g,gi)=>(
               <Section key={g.title} title={g.title} defaultOpen={gi===0}>
                 {g.fields.map(f=>renderField(f))}
