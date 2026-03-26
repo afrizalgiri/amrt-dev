@@ -2,8 +2,8 @@
 import { useState, useMemo, useRef, useCallback } from "react";
 import Link from "next/link";
 import {
-  ArrowLeft, Monitor, Smartphone, Download, Upload, X, Send, CheckCircle,
-  ChevronDown, User, Building2, ShoppingBag, Video,
+  ArrowLeft, Monitor, Tablet, Smartphone, Download, Upload, X, Send, CheckCircle,
+  ChevronDown, User, Building2, ShoppingBag, Video, Copy, ExternalLink, Check,
 } from "lucide-react";
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
@@ -51,7 +51,18 @@ function palette(bg:string){
 }
 
 // ─── Google Fonts snippet ───────────────────────────────────────────────────────
-const GF = `<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">`;
+const FONTS:{value:string;label:string}[] = [
+  {value:"Inter",             label:"Inter"},
+  {value:"Poppins",           label:"Poppins"},
+  {value:"Plus Jakarta Sans", label:"Jakarta Sans"},
+  {value:"DM Sans",           label:"DM Sans"},
+  {value:"Outfit",            label:"Outfit"},
+  {value:"Space Grotesk",     label:"Space Grotesk"},
+  {value:"Raleway",           label:"Raleway"},
+];
+function getGF(font:string="Inter"):string {
+  return `<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=${font.replace(/\s+/g,"+")}:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">`;
+}
 
 // ─── HTML Generators ───────────────────────────────────────────────────────────
 
@@ -69,9 +80,9 @@ function genPortfolio(d:Record<string,string>):string {
     {n:d.proyek3,desc:d.deskProyek3,url:d.urlProyek3},
   ].filter(p=>p.n);
   const title = d.titleWebsite||d.namaLengkap||"Portfolio";
-  return `<!DOCTYPE html><html lang="id"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/><title>${title}</title>${GF}<style>
+  return `<!DOCTYPE html><html lang="id"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/><title>${title}</title>${getGF(d.fontFamily)}<style>
 ${ac}*{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth}
-body{font-family:'Inter',system-ui,sans-serif;background:${C.bg};color:${C.text};-webkit-font-smoothing:antialiased}
+body{font-family:'${d.fontFamily||"Inter"}',system-ui,sans-serif;background:${C.bg};color:${C.text};-webkit-font-smoothing:antialiased}
 nav{position:fixed;inset:0 0 auto;z-index:99;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 6%;background:${C.navBg};border-bottom:1px solid ${C.border}}
 .logo{font-size:15px;font-weight:700;color:${C.text};letter-spacing:-.2px}
 .nav-links{display:flex;gap:24px}.nav-links a{color:${C.textSub};text-decoration:none;font-size:13px;font-weight:500;transition:color .18s}.nav-links a:hover{color:${C.text}}
@@ -136,9 +147,9 @@ function genBisnis(d:Record<string,string>):string {
     {n:d.fitur3,desc:d.deskripsiFitur3},{n:d.fitur4,desc:d.deskripsiFitur4},
     {n:d.fitur5,desc:d.deskripsiFitur5},{n:d.fitur6,desc:d.deskripsiFitur6},
   ].filter(f=>f.n);
-  return `<!DOCTYPE html><html lang="id"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/><title>${title}</title>${GF}<style>
+  return `<!DOCTYPE html><html lang="id"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/><title>${title}</title>${getGF(d.fontFamily)}<style>
 ${ac}*{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth}
-body{font-family:'Inter',system-ui,sans-serif;background:${C.bg};color:${C.text};-webkit-font-smoothing:antialiased}
+body{font-family:'${d.fontFamily||"Inter"}',system-ui,sans-serif;background:${C.bg};color:${C.text};-webkit-font-smoothing:antialiased}
 nav{position:sticky;top:0;z-index:99;height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 6%;background:${C.navBg};border-bottom:1px solid ${C.border}}
 .logo{display:flex;align-items:center;gap:10px;font-size:16px;font-weight:700;color:${C.text}}.logo img{height:32px;width:auto;object-fit:contain}
 .btn-nav{padding:9px 20px;background:${acc};color:#fff;border-radius:7px;text-decoration:none;font-weight:600;font-size:13px;transition:opacity .18s}.btn-nav:hover{opacity:.85}
@@ -212,9 +223,9 @@ function genToko(d:Record<string,string>):string {
     {nama:d.produk8,harga:d.harga8,foto:d.fotoProduk8,stok:d.stok8},
   ].filter(p=>p.nama);
   const fmt=(h:string)=>h?`Rp\u00a0${parseInt(h.replace(/\D/g,"")).toLocaleString("id")}`:"-";
-  return `<!DOCTYPE html><html lang="id"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/><title>${title}</title>${GF}<style>
+  return `<!DOCTYPE html><html lang="id"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/><title>${title}</title>${getGF(d.fontFamily)}<style>
 ${ac}*{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth}
-body{font-family:'Inter',system-ui,sans-serif;background:${C.bg};color:${C.text};-webkit-font-smoothing:antialiased}
+body{font-family:'${d.fontFamily||"Inter"}',system-ui,sans-serif;background:${C.bg};color:${C.text};-webkit-font-smoothing:antialiased}
 nav{position:sticky;top:0;z-index:99;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 5%;background:${C.navBg};border-bottom:1px solid ${C.border}}
 .logo{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:700;color:${C.text}}.logo img{height:28px;width:auto;object-fit:contain}
 .cart{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:${C.text};cursor:pointer;background:none;border:1px solid ${C.border};padding:7px 16px;border-radius:7px;transition:all .18s}.cart:hover{border-color:${C.text}}
@@ -281,9 +292,9 @@ function genKreator(d:Record<string,string>):string {
     d.linkedin  &&{label:"LinkedIn",  url:d.linkedin,  svg:`<svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>`},
     d.website   &&{label:d.websiteLabel||"Website",url:d.website,svg:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>`},
   ].filter(Boolean) as {label:string;url:string;svg:string}[];
-  return `<!DOCTYPE html><html lang="id"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/><title>${title}</title>${GF}<style>
+  return `<!DOCTYPE html><html lang="id"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/><title>${title}</title>${getGF(d.fontFamily)}<style>
 ${ac}*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Inter',system-ui,sans-serif;background:${C.bg};color:${C.text};min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:56px 24px 56px;-webkit-font-smoothing:antialiased}
+body{font-family:'${d.fontFamily||"Inter"}',system-ui,sans-serif;background:${C.bg};color:${C.text};min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:56px 24px 56px;-webkit-font-smoothing:antialiased}
 .card{width:100%;max-width:400px;display:flex;flex-direction:column;align-items:center}
 .av{width:96px;height:96px;border-radius:50%;overflow:hidden;background:${C.card};display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:700;color:${C.textMute};margin-bottom:16px;flex-shrink:0;border:2px solid ${C.border}}.av img{width:100%;height:100%;object-fit:cover}
 .nm{font-size:20px;font-weight:700;text-align:center;margin-bottom:3px;letter-spacing:-.3px;color:${C.text}}
@@ -372,6 +383,7 @@ const TEMPLATES:Tpl[] = [
       { title:"Tampilan & Warna", fields:[
         {key:"warnaBackground",label:"Warna Background", type:"color"},
         {key:"warnaPrimer",    label:"Warna Aksen/CTA",  type:"color"},
+        {key:"fontFamily",     label:"Font",             type:"select",options:FONTS},
         {key:"animasi",        label:"Animasi Masuk",    type:"select",options:ANIM},
       ]},
     ],
@@ -414,6 +426,7 @@ const TEMPLATES:Tpl[] = [
       { title:"Tampilan & Warna", fields:[
         {key:"warnaBackground",label:"Warna Background", type:"color"},
         {key:"warnaPrimer",    label:"Warna Aksen/CTA",  type:"color"},
+        {key:"fontFamily",     label:"Font",             type:"select",options:FONTS},
         {key:"animasi",        label:"Animasi Masuk",    type:"select",options:ANIM},
       ]},
     ],
@@ -488,6 +501,7 @@ const TEMPLATES:Tpl[] = [
       { title:"Tampilan & Warna", fields:[
         {key:"warnaBackground",label:"Warna Background", type:"color"},
         {key:"warnaPrimer",    label:"Warna Aksen/CTA",  type:"color"},
+        {key:"fontFamily",     label:"Font",             type:"select",options:FONTS},
         {key:"animasi",        label:"Animasi Masuk",    type:"select",options:ANIM},
       ]},
     ],
@@ -529,6 +543,7 @@ const TEMPLATES:Tpl[] = [
       { title:"Tampilan & Warna", fields:[
         {key:"warnaBackground",label:"Warna Background", type:"color"},
         {key:"warnaPrimer",    label:"Warna Tombol CTA", type:"color"},
+        {key:"fontFamily",     label:"Font",             type:"select",options:FONTS},
         {key:"animasi",        label:"Animasi Masuk",    type:"select",options:ANIM},
       ]},
     ],
@@ -543,7 +558,7 @@ const DEFAULTS:Record<string,Record<string,string>> = {
     skill5:"Node.js", skill6:"UI/UX Design",
     proyek1:"Website Company", deskProyek1:"Landing page profesional untuk perusahaan klien.",
     email:"nama@email.com", instagram:"@namakamu", whatsapp:"08123456789",
-    warnaBackground:"#0a0a0a", warnaPrimer:"#2563eb", animasi:"slide",
+    warnaBackground:"#0a0a0a", warnaPrimer:"#2563eb", animasi:"slide", fontFamily:"Inter",
   },
   bisnis:{
     namaBisnis:"Nama Bisnis", slogan:"Solusi Terbaik untuk Kamu",
@@ -553,7 +568,7 @@ const DEFAULTS:Record<string,Record<string,string>> = {
     fitur3:"Harga Terjangkau", deskripsiFitur3:"Harga kompetitif tanpa kompromi kualitas",
     fitur4:"Support 24/7",     deskripsiFitur4:"Tim siap membantu kapanpun Anda butuhkan",
     email:"bisnis@email.com", whatsapp:"08123456789", alamat:"Jakarta, Indonesia",
-    warnaBackground:"#ffffff", warnaPrimer:"#1d4ed8", animasi:"slide",
+    warnaBackground:"#ffffff", warnaPrimer:"#1d4ed8", animasi:"slide", fontFamily:"Inter",
   },
   toko:{
     namaToko:"Toko Keren", slogan:"Belanja Mudah & Terpercaya",
@@ -563,7 +578,7 @@ const DEFAULTS:Record<string,Record<string,string>> = {
     produk3:"New Arrival",     harga3:"199000",
     produk4:"Limited Edition", harga4:"299000",
     whatsapp:"08123456789", instagram:"@tokokamu", alamat:"Bandung, Jawa Barat",
-    warnaBackground:"#ffffff", warnaPrimer:"#111111", animasi:"fade",
+    warnaBackground:"#ffffff", warnaPrimer:"#111111", animasi:"fade", fontFamily:"Inter",
   },
   kreator:{
     nama:"Nama Kreator", username:"@kreatorku",
@@ -574,11 +589,11 @@ const DEFAULTS:Record<string,Record<string,string>> = {
     statBrand:"50+",   labelStat3:"Brand Deal",
     ctaKolaborasi:"Ajak Kolaborasi",
     whatsapp:"08123456789",
-    warnaBackground:"#f5f5f5", warnaPrimer:"#111111", animasi:"zoom",
+    warnaBackground:"#f5f5f5", warnaPrimer:"#111111", animasi:"zoom", fontFamily:"Inter",
   },
 };
 
-// ─── ImageUpload ────────────────────────────────────────────────────────────────
+// ─── ImageUpload ─────────────────────────────────────────────────────────────
 function ImageUpload({value,onChange}:{label:string;value:string;onChange:(b64:string)=>void}) {
   const ref = useRef<HTMLInputElement>(null);
   const handleFile=(file:File)=>{ const r=new FileReader(); r.onload=(e)=>onChange(e.target?.result as string); r.readAsDataURL(file); };
@@ -591,47 +606,54 @@ function ImageUpload({value,onChange}:{label:string;value:string;onChange:(b64:s
       {value?(
         <><img src={value} alt="preview" className="absolute inset-0 w-full h-full object-cover opacity-60"/><div className="relative z-10 text-[10px] text-white bg-black/50 px-2 py-0.5 rounded-full">Ganti</div></>
       ):(
-        <><Upload className="w-3.5 h-3.5" style={{color:"rgba(167,139,250,0.6)"}}/><span className="text-[10px]" style={{color:"rgba(167,139,250,0.5)"}}>Upload gambar</span></>
+        <><Upload className="w-3.5 h-3.5" style={{color:"rgba(167,139,250,0.6)"}}/><span className="text-[10px]" style={{color:"rgba(167,139,250,0.5)"}}>Upload atau drag gambar</span></>
       )}
       <input ref={ref} type="file" accept="image/*" className="hidden" onChange={e=>{const f=e.target.files?.[0];if(f)handleFile(f);}}/>
     </div>
   );
 }
 
-// ─── Accordion section ─────────────────────────────────────────────────────────
-function Section({title,children,defaultOpen=false}:{title:string;children:React.ReactNode;defaultOpen?:boolean}) {
+// ─── Section accordion ───────────────────────────────────────────────────────
+function Section({title,count,children,defaultOpen=false}:{title:string;count?:number;children:React.ReactNode;defaultOpen?:boolean}) {
   const [open,setOpen]=useState(defaultOpen);
   return (
     <div style={{borderBottom:"1px solid rgba(124,58,237,0.1)"}}>
       <button onClick={()=>setOpen(!open)}
-        className="w-full flex items-center justify-between px-5 py-2.5 transition-colors group"
+        className="w-full flex items-center justify-between px-4 py-2.5 transition-colors group"
         style={{background:"transparent"}}
         onMouseEnter={e=>(e.currentTarget.style.background="rgba(124,58,237,0.05)")}
         onMouseLeave={e=>(e.currentTarget.style.background="transparent")}>
-        <span className="text-[10px] font-semibold uppercase tracking-widest" style={{color:"rgba(167,139,250,0.55)"}}>{title}</span>
-        <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${open?"rotate-180":""}`} style={{color:"rgba(124,58,237,0.4)"}}/>
+        <div className="flex items-center gap-2">
+          <span className="text-[10px] font-semibold uppercase tracking-widest" style={{color:"rgba(167,139,250,0.55)"}}>{title}</span>
+          {count!==undefined && (
+            <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full" style={{background:"rgba(124,58,237,0.12)",color:"rgba(167,139,250,0.45)"}}>{count}</span>
+          )}
+        </div>
+        <ChevronDown className={`w-3 h-3 transition-transform duration-200 ${open?"rotate-180":""}`} style={{color:"rgba(124,58,237,0.4)"}}/>
       </button>
-      {open && <div style={{borderTop:"1px solid rgba(124,58,237,0.1)"}}>{children}</div>}
+      {open && <div style={{borderTop:"1px solid rgba(124,58,237,0.08)"}}>{children}</div>}
     </div>
   );
 }
 
-// ─── Main ──────────────────────────────────────────────────────────────────────
+// ─── Main ────────────────────────────────────────────────────────────────────
 export default function BuatPage() {
-  const [tid,setTid]           = useState("portfolio");
-  const [formData,setFormData] = useState<Record<string,string>>(DEFAULTS.portfolio);
-  const [prevMode,setPrevMode] = useState<"desktop"|"mobile">("desktop");
+  const [tid,setTid]             = useState("portfolio");
+  const [formData,setFormData]   = useState<Record<string,string>>(DEFAULTS.portfolio);
+  const [prevMode,setPrevMode]   = useState<"desktop"|"tablet"|"mobile">("desktop");
   const [showPanel,setShowPanel] = useState<"edit"|"preview">("edit");
+  const [activeTab,setActiveTab] = useState<"konten"|"desain">("konten");
   const [showModal,setShowModal] = useState(false);
-  const [reqName,setReqName]   = useState("");
-  const [reqWa,setReqWa]       = useState("");
-  const [sent,setSent]         = useState(false);
+  const [reqName,setReqName]     = useState("");
+  const [reqWa,setReqWa]         = useState("");
+  const [sent,setSent]           = useState(false);
+  const [copied,setCopied]       = useState(false);
 
   const tpl  = TEMPLATES.find(t=>t.id===tid)!;
   const html = useMemo(()=>generateHTML(tid,formData),[tid,formData]);
   const set  = useCallback((k:string,v:string)=>setFormData(p=>({...p,[k]:v})),[]);
 
-  const switchTemplate=(id:string)=>{ setTid(id); setFormData(DEFAULTS[id]||{}); };
+  const switchTemplate=(id:string)=>{ setTid(id); setFormData(DEFAULTS[id]||{}); setActiveTab("konten"); };
 
   const handleDownload=()=>{
     if(!reqName||!reqWa) return;
@@ -641,32 +663,45 @@ export default function BuatPage() {
     setSent(true);
   };
 
+  const copyHTML=useCallback(()=>{
+    navigator.clipboard.writeText(html).then(()=>{ setCopied(true); setTimeout(()=>setCopied(false),2000); });
+  },[html]);
+
+  const openInTab=useCallback(()=>{
+    const blob=new Blob([html],{type:"text/html"});
+    const url=URL.createObjectURL(blob);
+    window.open(url,"_blank");
+    setTimeout(()=>URL.revokeObjectURL(url),5000);
+  },[html]);
+
   const renderField=(f:Field)=>{
-    const inp="w-full px-3 py-2 rounded-lg text-sm transition text-white placeholder-gray-600 focus:outline-none";
     const inpStyle={background:"rgba(124,58,237,0.07)",border:"1px solid rgba(124,58,237,0.2)",color:"#e5e7eb"};
-    const inpFocusStyle={border:"1px solid rgba(124,58,237,0.5)",boxShadow:"0 0 0 3px rgba(124,58,237,0.08)"};
-    const row="flex items-start gap-3 px-5 py-2.5 transition-colors";
-    const rowStyle={borderBottom:"1px solid rgba(124,58,237,0.08)"};
+    const inpFocus={border:"1px solid rgba(124,58,237,0.5)",boxShadow:"0 0 0 3px rgba(124,58,237,0.08)"};
+    const inp="w-full px-3 py-2 rounded-lg text-sm transition text-white placeholder-gray-600 focus:outline-none";
+    const row="flex items-start gap-3 px-4 py-2.5 transition-colors";
+    const rowSt={borderBottom:"1px solid rgba(124,58,237,0.08)"};
     const lbl="w-28 flex-shrink-0 text-sm pt-1.5 leading-tight";
-    const lblStyle={color:"rgba(196,181,253,0.7)"};
+    const lblC={color:"rgba(196,181,253,0.7)"};
+
     if(f.type==="image") return (
-      <div key={f.key} className={row} style={rowStyle}>
-        <span className={lbl} style={lblStyle}>{f.label}</span>
+      <div key={f.key} className={row} style={rowSt}>
+        <span className={lbl} style={lblC}>{f.label}</span>
         <div className="flex-1"><ImageUpload label={f.label} value={formData[f.key]||""} onChange={v=>set(f.key,v)}/></div>
       </div>
     );
     if(f.type==="textarea") return (
-      <div key={f.key} className={row} style={rowStyle}>
-        <span className={lbl} style={lblStyle}>{f.label}</span>
+      <div key={f.key} className={row} style={rowSt}>
+        <span className={lbl} style={lblC}>{f.label}</span>
         <div className="flex-1">
-          <textarea value={formData[f.key]||""} onChange={e=>set(f.key,e.target.value)} placeholder={f.placeholder} rows={3} className={inp+" resize-none"} style={inpStyle}
-            onFocus={e=>Object.assign(e.currentTarget.style,inpFocusStyle)} onBlur={e=>Object.assign(e.currentTarget.style,inpStyle)}/>
+          <textarea value={formData[f.key]||""} onChange={e=>set(f.key,e.target.value)} placeholder={f.placeholder} rows={3}
+            className={inp+" resize-none"} style={inpStyle}
+            onFocus={e=>Object.assign(e.currentTarget.style,inpFocus)} onBlur={e=>Object.assign(e.currentTarget.style,inpStyle)}/>
         </div>
       </div>
     );
     if(f.type==="color") return (
-      <div key={f.key} className={row} style={rowStyle}>
-        <span className={lbl} style={lblStyle}>{f.label}</span>
+      <div key={f.key} className={row} style={rowSt}>
+        <span className={lbl} style={lblC}>{f.label}</span>
         <div className="flex-1 flex items-center gap-2.5 px-3 py-2 rounded-lg cursor-pointer transition" style={inpStyle}>
           <input type="color" value={formData[f.key]||"#111111"} onChange={e=>set(f.key,e.target.value)} className="w-6 h-6 rounded cursor-pointer border-0 bg-transparent flex-shrink-0"/>
           <span className="text-xs font-mono" style={{color:"rgba(196,181,253,0.6)"}}>{formData[f.key]||"#111111"}</span>
@@ -674,8 +709,8 @@ export default function BuatPage() {
       </div>
     );
     if(f.type==="select") return (
-      <div key={f.key} className={row} style={rowStyle}>
-        <span className={lbl} style={lblStyle}>{f.label}</span>
+      <div key={f.key} className={row} style={rowSt}>
+        <span className={lbl} style={lblC}>{f.label}</span>
         <div className="flex-1 flex flex-wrap gap-1.5 pt-1">
           {f.options?.map(o=>(
             <button key={o.value} type="button" onClick={()=>set(f.key,o.value)}
@@ -690,13 +725,20 @@ export default function BuatPage() {
       </div>
     );
     return (
-      <div key={f.key} className={row} style={rowStyle}>
-        <span className={lbl} style={lblStyle}>{f.label}</span>
-        <div className="flex-1"><input value={formData[f.key]||""} onChange={e=>set(f.key,e.target.value)} placeholder={f.placeholder} className={inp} style={inpStyle}
-          onFocus={e=>Object.assign(e.currentTarget.style,inpFocusStyle)} onBlur={e=>Object.assign(e.currentTarget.style,inpStyle)}/></div>
+      <div key={f.key} className={row} style={rowSt}>
+        <span className={lbl} style={lblC}>{f.label}</span>
+        <div className="flex-1">
+          <input value={formData[f.key]||""} onChange={e=>set(f.key,e.target.value)} placeholder={f.placeholder}
+            className={inp} style={inpStyle}
+            onFocus={e=>Object.assign(e.currentTarget.style,inpFocus)} onBlur={e=>Object.assign(e.currentTarget.style,inpStyle)}/>
+        </div>
       </div>
     );
   };
+
+  // Split template groups into content groups vs design group
+  const contentGroups = tpl.groups.filter(g=>g.title!=="Tampilan & Warna");
+  const designGroup   = tpl.groups.find(g=>g.title==="Tampilan & Warna");
 
   const pageStyle={
     background:"#07080e",
@@ -709,35 +751,47 @@ export default function BuatPage() {
 
       {/* ── Topbar ── */}
       <div className="flex-shrink-0 h-12 flex items-center justify-between px-4 z-50 backdrop-blur-xl"
-        style={{background:"rgba(7,8,14,0.88)",borderBottom:"1px solid rgba(124,58,237,0.22)"}}>
+        style={{background:"rgba(7,8,14,0.9)",borderBottom:"1px solid rgba(124,58,237,0.22)"}}>
         <div className="flex items-center gap-3">
-          <Link href="/belajar" className="p-1 rounded-md transition-colors" style={{color:"rgba(167,139,250,0.6)"}}>
+          <Link href="/belajar" className="p-1.5 rounded-md transition-colors hover:bg-white/5" style={{color:"rgba(167,139,250,0.6)"}}>
             <ArrowLeft className="w-4 h-4"/>
           </Link>
           <div className="w-px h-4" style={{background:"rgba(124,58,237,0.25)"}}/>
-          <span className="text-sm font-semibold" style={{color:"rgba(229,231,235,0.9)"}}>{tpl.name}</span>
+          <div className="hidden sm:flex items-center gap-2">
+            <div className="w-2 h-2 rounded-full" style={{background:"linear-gradient(135deg,#7c3aed,#06b6d4)"}}/>
+            <span className="text-sm font-semibold" style={{color:"rgba(229,231,235,0.9)"}}>{tpl.name}</span>
+          </div>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5">
+          {/* Mobile: edit/preview toggle */}
           <div className="flex sm:hidden items-center gap-0.5 rounded-lg p-1" style={{background:"rgba(124,58,237,0.1)",border:"1px solid rgba(124,58,237,0.18)"}}>
-            <button onClick={()=>setShowPanel("edit")}
-              className="px-3 py-1 text-xs font-medium rounded-md transition-all"
+            <button onClick={()=>setShowPanel("edit")} className="px-3 py-1 text-xs font-medium rounded-md transition-all"
               style={showPanel==="edit"?{background:"rgba(124,58,237,0.35)",color:"#e9d5ff"}:{color:"rgba(167,139,250,0.45)"}}>Edit</button>
-            <button onClick={()=>setShowPanel("preview")}
-              className="px-3 py-1 text-xs font-medium rounded-md transition-all"
+            <button onClick={()=>setShowPanel("preview")} className="px-3 py-1 text-xs font-medium rounded-md transition-all"
               style={showPanel==="preview"?{background:"rgba(124,58,237,0.35)",color:"#e9d5ff"}:{color:"rgba(167,139,250,0.45)"}}>Preview</button>
           </div>
-          <div className="hidden sm:flex items-center gap-0.5 rounded-lg p-1" style={{background:"rgba(124,58,237,0.1)",border:"1px solid rgba(124,58,237,0.18)"}}>
-            <button onClick={()=>setPrevMode("desktop")}
-              className="p-1.5 rounded-md transition-all"
-              style={prevMode==="desktop"?{background:"rgba(124,58,237,0.35)",color:"#a78bfa"}:{color:"rgba(167,139,250,0.4)"}}><Monitor className="w-3.5 h-3.5"/></button>
-            <button onClick={()=>setPrevMode("mobile")}
-              className="p-1.5 rounded-md transition-all"
-              style={prevMode==="mobile"?{background:"rgba(124,58,237,0.35)",color:"#a78bfa"}:{color:"rgba(167,139,250,0.4)"}}><Smartphone className="w-3.5 h-3.5"/></button>
+          {/* Desktop: device toggle */}
+          <div className="hidden sm:flex items-center gap-0.5 rounded-lg p-1" style={{background:"rgba(124,58,237,0.08)",border:"1px solid rgba(124,58,237,0.15)"}}>
+            <button onClick={()=>setPrevMode("desktop")} title="Desktop" className="p-1.5 rounded-md transition-all"
+              style={prevMode==="desktop"?{background:"rgba(124,58,237,0.3)",color:"#a78bfa"}:{color:"rgba(167,139,250,0.35)"}}><Monitor className="w-3.5 h-3.5"/></button>
+            <button onClick={()=>setPrevMode("tablet")} title="Tablet" className="p-1.5 rounded-md transition-all"
+              style={prevMode==="tablet"?{background:"rgba(124,58,237,0.3)",color:"#a78bfa"}:{color:"rgba(167,139,250,0.35)"}}><Tablet className="w-3.5 h-3.5"/></button>
+            <button onClick={()=>setPrevMode("mobile")} title="Mobile" className="p-1.5 rounded-md transition-all"
+              style={prevMode==="mobile"?{background:"rgba(124,58,237,0.3)",color:"#a78bfa"}:{color:"rgba(167,139,250,0.35)"}}><Smartphone className="w-3.5 h-3.5"/></button>
           </div>
+          <div className="w-px h-4 hidden sm:block" style={{background:"rgba(124,58,237,0.2)"}}/>
+          <button onClick={copyHTML} title="Copy HTML" className="hidden sm:flex p-2 rounded-md transition-all items-center gap-1.5 text-xs"
+            style={copied?{background:"rgba(34,197,94,0.15)",color:"#4ade80",border:"1px solid rgba(34,197,94,0.3)"}:{color:"rgba(167,139,250,0.5)",border:"1px solid transparent"}}>
+            {copied?<><Check className="w-3.5 h-3.5"/>Copied!</>:<><Copy className="w-3.5 h-3.5"/><span className="hidden lg:inline">Copy HTML</span></>}
+          </button>
+          <button onClick={openInTab} title="Buka di tab baru" className="hidden sm:flex p-2 rounded-md transition-all items-center"
+            style={{color:"rgba(167,139,250,0.5)"}}>
+            <ExternalLink className="w-3.5 h-3.5"/>
+          </button>
           <button onClick={()=>setShowModal(true)}
             className="flex items-center gap-1.5 px-3.5 py-2 text-white text-xs font-semibold rounded-lg transition-all"
-            style={{background:"linear-gradient(135deg,#7c3aed,#06b6d4)",boxShadow:"0 0 16px rgba(124,58,237,0.4)"}}>
-            <Download className="w-3.5 h-3.5"/> Download
+            style={{background:"linear-gradient(135deg,#7c3aed,#06b6d4)",boxShadow:"0 0 16px rgba(124,58,237,0.35)"}}>
+            <Download className="w-3.5 h-3.5"/><span className="hidden sm:inline">Download</span>
           </button>
         </div>
       </div>
@@ -746,87 +800,145 @@ export default function BuatPage() {
       <div className="flex-1 flex overflow-hidden">
 
         {/* ── Sidebar ── */}
-        <aside className={`flex-shrink-0 w-72 xl:w-80 flex flex-col overflow-y-auto ${showPanel==="preview"?"hidden sm:flex":"flex"}`}
-          style={{background:"rgba(7,8,14,0.72)",borderRight:"1px solid rgba(124,58,237,0.18)",backdropFilter:"blur(12px)"}}>
+        <aside className={`flex-shrink-0 w-72 xl:w-80 flex flex-col overflow-hidden ${showPanel==="preview"?"hidden sm:flex":"flex"}`}
+          style={{background:"rgba(7,8,14,0.8)",borderRight:"1px solid rgba(124,58,237,0.18)",backdropFilter:"blur(12px)"}}>
+
+          {/* Template selector */}
           <div className="flex-shrink-0 p-3" style={{borderBottom:"1px solid rgba(124,58,237,0.14)"}}>
-            <p className="text-[10px] font-semibold uppercase tracking-widest px-1 mb-2" style={{color:"rgba(167,139,250,0.45)"}}>Template</p>
+            <p className="text-[9px] font-semibold uppercase tracking-[0.14em] px-1 mb-2" style={{color:"rgba(124,58,237,0.45)"}}>Template</p>
             <div className="grid grid-cols-2 gap-1.5">
               {TEMPLATES.map(t=>{
                 const TIcon=t.Icon;
                 const active=tid===t.id;
                 return (
                   <button key={t.id} onClick={()=>switchTemplate(t.id)}
-                    className="flex items-center gap-2 px-3 py-2.5 rounded-lg text-left transition-all text-xs font-medium"
+                    className="flex flex-col gap-1.5 px-3 py-2.5 rounded-xl text-left transition-all relative overflow-hidden"
                     style={active
-                      ?{background:"rgba(124,58,237,0.18)",border:"1px solid rgba(124,58,237,0.45)",color:"#e9d5ff",boxShadow:"0 0 12px rgba(124,58,237,0.2)"}
-                      :{background:"rgba(124,58,237,0.05)",border:"1px solid rgba(124,58,237,0.12)",color:"rgba(167,139,250,0.5)"}}>
-                    <TIcon className="w-3.5 h-3.5 flex-shrink-0" style={{color:active?t.color:"rgba(167,139,250,0.4)"}}/>
-                    <span className="leading-tight">{t.name}</span>
+                      ?{background:"rgba(124,58,237,0.18)",border:"1px solid rgba(124,58,237,0.45)",boxShadow:`0 0 16px rgba(124,58,237,0.18),inset 0 1px 0 rgba(167,139,250,0.12)`}
+                      :{background:"rgba(124,58,237,0.04)",border:"1px solid rgba(124,58,237,0.1)"}}>
+                    {active && <div className="absolute top-0 left-0 right-0 h-0.5 rounded-t-xl" style={{background:`linear-gradient(90deg,${t.color},transparent)`}}/>}
+                    <div className="flex items-center gap-2">
+                      <div className="w-5 h-5 rounded-md flex items-center justify-center flex-shrink-0"
+                        style={{background:active?`${t.color}22`:"rgba(124,58,237,0.08)",border:`1px solid ${active?t.color+"44":"rgba(124,58,237,0.15)"}`}}>
+                        <TIcon className="w-2.5 h-2.5" style={{color:active?t.color:"rgba(167,139,250,0.4)"}}/>
+                      </div>
+                      <span className="text-[11px] font-semibold leading-tight" style={{color:active?"#e9d5ff":"rgba(167,139,250,0.5)"}}>{t.name}</span>
+                    </div>
+                    <p className="text-[9px] leading-snug pl-0.5" style={{color:active?"rgba(196,181,253,0.5)":"rgba(124,58,237,0.3)"}}>{t.desc}</p>
                   </button>
                 );
               })}
             </div>
           </div>
-          <div className="flex-1">
-            {tpl.groups.map((g,gi)=>(
-              <Section key={g.title} title={g.title} defaultOpen={gi===0}>
-                {g.fields.map(f=>renderField(f))}
-              </Section>
+
+          {/* Tabs */}
+          <div className="flex-shrink-0 flex" style={{borderBottom:"1px solid rgba(124,58,237,0.14)"}}>
+            {(["konten","desain"] as const).map(tab=>(
+              <button key={tab} onClick={()=>setActiveTab(tab)}
+                className="flex-1 py-2.5 text-xs font-semibold transition-all capitalize relative"
+                style={activeTab===tab?{color:"#a78bfa"}:{color:"rgba(167,139,250,0.35)"}}>
+                {tab==="konten"?"Konten":"Desain"}
+                {activeTab===tab && <div className="absolute bottom-0 left-1/4 right-1/4 h-0.5 rounded-full" style={{background:"linear-gradient(90deg,#7c3aed,#06b6d4)"}}/>}
+              </button>
             ))}
+          </div>
+
+          {/* Tab content */}
+          <div className="flex-1 overflow-y-auto">
+            {activeTab==="konten" ? (
+              contentGroups.map((g,gi)=>(
+                <Section key={g.title} title={g.title} count={g.fields.length} defaultOpen={gi===0}>
+                  {g.fields.map(f=>renderField(f))}
+                </Section>
+              ))
+            ):(
+              <div className="p-4 space-y-1">
+                <p className="text-[9px] font-semibold uppercase tracking-[0.14em] mb-3" style={{color:"rgba(124,58,237,0.45)"}}>Tampilan & Warna</p>
+                {designGroup?.fields.map(f=>renderField(f))}
+                {!designGroup && <p className="text-xs" style={{color:"rgba(167,139,250,0.3)"}}>Tidak ada pengaturan desain.</p>}
+              </div>
+            )}
+          </div>
+
+          {/* Status bar */}
+          <div className="flex-shrink-0 px-4 py-2 flex items-center justify-between"
+            style={{borderTop:"1px solid rgba(124,58,237,0.1)",background:"rgba(5,6,10,0.6)"}}>
+            <span className="text-[10px]" style={{color:"rgba(124,58,237,0.4)"}}>
+              {contentGroups.reduce((a,g)=>a+g.fields.length,0)} field
+            </span>
+            <span className="flex items-center gap-1 text-[10px]" style={{color:"rgba(34,197,94,0.5)"}}>
+              <span className="w-1.5 h-1.5 rounded-full bg-green-500/60 animate-pulse"/>Live Preview
+            </span>
           </div>
         </aside>
 
         {/* ── Preview ── */}
         <main className={`flex-1 flex flex-col overflow-hidden ${showPanel==="edit"&&"hidden sm:flex"}`}
-          style={{background:"rgba(5,6,10,0.6)"}}>
+          style={{background:"rgba(5,6,10,0.5)"}}>
           <div className="flex-1 flex items-start justify-center overflow-auto p-4 sm:p-6">
-            <div className={`transition-all duration-300 overflow-hidden ${prevMode==="mobile"?"w-[390px] rounded-[36px]":"w-full max-w-5xl rounded-xl"}`}
+            <div className="transition-all duration-300 overflow-hidden"
               style={{
-                height:prevMode==="mobile"?"780px":"calc(100vh - 120px)",
-                border:prevMode==="mobile"?"6px solid rgba(124,58,237,0.5)":"1px solid rgba(124,58,237,0.2)",
-                boxShadow:prevMode==="mobile"?"0 24px 48px rgba(0,0,0,0.5),0 0 30px rgba(124,58,237,0.15)":"0 0 40px rgba(124,58,237,0.1)",
+                width: prevMode==="mobile"?"390px": prevMode==="tablet"?"768px":"100%",
+                maxWidth: prevMode==="desktop"?"1100px":undefined,
+                height: prevMode==="mobile"?"780px": prevMode==="tablet"?"1024px":"calc(100vh - 120px)",
+                borderRadius: prevMode==="mobile"?"36px": prevMode==="tablet"?"20px":"12px",
+                border: prevMode==="mobile"?"6px solid rgba(124,58,237,0.5)": prevMode==="tablet"?"4px solid rgba(124,58,237,0.35)":"1px solid rgba(124,58,237,0.2)",
+                boxShadow: prevMode!=="desktop"?"0 24px 60px rgba(0,0,0,0.6),0 0 40px rgba(124,58,237,0.15)":"0 0 40px rgba(124,58,237,0.08)",
               }}>
               <iframe id="pf" srcDoc={html} className="w-full h-full border-0" title="Preview"/>
             </div>
+          </div>
+          {/* Preview label */}
+          <div className="flex-shrink-0 flex items-center justify-center py-2" style={{borderTop:"1px solid rgba(124,58,237,0.08)"}}>
+            <span className="text-[10px] font-medium" style={{color:"rgba(124,58,237,0.35)"}}>
+              {prevMode==="desktop"?"Desktop (Penuh)":prevMode==="tablet"?"Tablet (768px)":"Mobile (390px)"}
+            </span>
           </div>
         </main>
       </div>
 
       {/* ── Modal ── */}
       {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-sm" style={{background:"rgba(0,0,0,0.6)"}}>
-          <div className="relative w-full max-w-md rounded-2xl p-6" style={{background:"rgba(10,11,20,0.95)",border:"1px solid rgba(124,58,237,0.35)",boxShadow:"0 0 60px rgba(124,58,237,0.2),0 24px 48px rgba(0,0,0,0.5)"}}>
-            <button onClick={()=>{setShowModal(false);setSent(false);}} className="absolute top-4 right-4 rounded-lg p-1 transition-colors" style={{color:"rgba(167,139,250,0.5)"}}><X className="w-4 h-4"/></button>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-sm" style={{background:"rgba(0,0,0,0.65)"}}>
+          <div className="relative w-full max-w-md rounded-2xl p-6" style={{background:"rgba(10,11,20,0.97)",border:"1px solid rgba(124,58,237,0.35)",boxShadow:"0 0 60px rgba(124,58,237,0.2),0 24px 48px rgba(0,0,0,0.5)"}}>
+            <button onClick={()=>{setShowModal(false);setSent(false);}} className="absolute top-4 right-4 rounded-lg p-1.5 transition-colors hover:bg-white/5" style={{color:"rgba(167,139,250,0.5)"}}><X className="w-4 h-4"/></button>
             {!sent?(
               <>
-                <h2 className="text-lg font-bold text-white mb-1">Download & Hosting</h2>
-                <p className="text-sm mb-5 leading-relaxed" style={{color:"rgba(156,163,175,0.8)"}}>Isi data di bawah, pesan akan dikirim otomatis ke admin. Setelah konfirmasi, website siap di-download atau langsung dihosting.</p>
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{background:"linear-gradient(135deg,rgba(124,58,237,0.3),rgba(6,182,212,0.2))",border:"1px solid rgba(124,58,237,0.3)"}}>
+                    <Download className="w-4 h-4" style={{color:"#a78bfa"}}/>
+                  </div>
+                  <div>
+                    <h2 className="text-base font-bold text-white">Download & Hosting</h2>
+                    <p className="text-[11px]" style={{color:"rgba(156,163,175,0.6)"}}>Gratis · Chat ke Admin WhatsApp</p>
+                  </div>
+                </div>
+                <p className="text-sm mb-5 leading-relaxed" style={{color:"rgba(156,163,175,0.7)"}}>Isi data di bawah, pesan akan dikirim otomatis ke admin. Setelah konfirmasi, website siap di-download atau langsung dihosting.</p>
                 <div className="space-y-3 mb-5">
-                  <input value={reqName} onChange={e=>setReqName(e.target.value)} placeholder="Nama lengkap kamu"
-                    className="w-full px-4 py-3 rounded-xl text-white placeholder-gray-600 focus:outline-none text-sm transition"
-                    style={{background:"rgba(124,58,237,0.08)",border:"1px solid rgba(124,58,237,0.25)"}}
-                    onFocus={e=>{e.currentTarget.style.border="1px solid rgba(124,58,237,0.55)";e.currentTarget.style.boxShadow="0 0 0 3px rgba(124,58,237,0.1)"}}
-                    onBlur={e=>{e.currentTarget.style.border="1px solid rgba(124,58,237,0.25)";e.currentTarget.style.boxShadow="none"}}/>
-                  <input value={reqWa} onChange={e=>setReqWa(e.target.value)} placeholder="Nomor WhatsApp kamu"
-                    className="w-full px-4 py-3 rounded-xl text-white placeholder-gray-600 focus:outline-none text-sm transition"
-                    style={{background:"rgba(124,58,237,0.08)",border:"1px solid rgba(124,58,237,0.25)"}}
-                    onFocus={e=>{e.currentTarget.style.border="1px solid rgba(124,58,237,0.55)";e.currentTarget.style.boxShadow="0 0 0 3px rgba(124,58,237,0.1)"}}
-                    onBlur={e=>{e.currentTarget.style.border="1px solid rgba(124,58,237,0.25)";e.currentTarget.style.boxShadow="none"}}/>
+                  {[{v:reqName,sv:setReqName,ph:"Nama lengkap kamu"},{v:reqWa,sv:setReqWa,ph:"Nomor WhatsApp kamu"}].map((inp,i)=>(
+                    <input key={i} value={inp.v} onChange={e=>inp.sv(e.target.value)} placeholder={inp.ph}
+                      className="w-full px-4 py-3 rounded-xl text-white placeholder-gray-600 focus:outline-none text-sm transition"
+                      style={{background:"rgba(124,58,237,0.08)",border:"1px solid rgba(124,58,237,0.22)"}}
+                      onFocus={e=>{e.currentTarget.style.border="1px solid rgba(124,58,237,0.55)";e.currentTarget.style.boxShadow="0 0 0 3px rgba(124,58,237,0.1)"}}
+                      onBlur={e=>{e.currentTarget.style.border="1px solid rgba(124,58,237,0.22)";e.currentTarget.style.boxShadow="none"}}/>
+                  ))}
                 </div>
                 <button onClick={handleDownload} disabled={!reqName||!reqWa}
                   className="w-full py-3 disabled:opacity-40 disabled:cursor-not-allowed text-white font-bold rounded-xl transition-all flex items-center justify-center gap-2 text-sm"
-                  style={{background:"#25D366",boxShadow:"0 0 20px rgba(37,211,102,0.25)"}}>
+                  style={{background:"#25D366",boxShadow:"0 0 20px rgba(37,211,102,0.2)"}}>
                   <Send className="w-4 h-4"/> Kirim ke Admin & Download
                 </button>
-                <p className="text-[11px] text-center mt-3" style={{color:"rgba(167,139,250,0.4)"}}>100% Gratis · Chat langsung ke WhatsApp admin</p>
+                <p className="text-[11px] text-center mt-3" style={{color:"rgba(167,139,250,0.35)"}}>100% Gratis · Tidak perlu daftar</p>
               </>
             ):(
-              <div className="text-center py-6">
-                <CheckCircle className="w-12 h-12 mx-auto mb-3" style={{color:"#22d3ee"}}/>
+              <div className="text-center py-8">
+                <div className="w-14 h-14 rounded-2xl mx-auto mb-4 flex items-center justify-center" style={{background:"rgba(6,182,212,0.1)",border:"1px solid rgba(6,182,212,0.3)"}}>
+                  <CheckCircle className="w-7 h-7" style={{color:"#22d3ee"}}/>
+                </div>
                 <h2 className="text-lg font-bold text-white mb-2">Berhasil Dikirim!</h2>
-                <p className="text-sm leading-relaxed mb-4" style={{color:"rgba(156,163,175,0.8)"}}>Admin akan konfirmasi via WhatsApp. Kamu juga bisa request hosting di chat yang sama.</p>
+                <p className="text-sm leading-relaxed mb-6" style={{color:"rgba(156,163,175,0.7)"}}>Admin akan konfirmasi via WhatsApp. Kamu juga bisa request hosting di chat yang sama.</p>
                 <button onClick={()=>{setShowModal(false);setSent(false);}}
-                  className="px-6 py-2.5 text-white rounded-lg text-sm font-semibold transition-all"
+                  className="px-6 py-2.5 text-white rounded-xl text-sm font-semibold transition-all"
                   style={{background:"linear-gradient(135deg,#7c3aed,#06b6d4)"}}>Tutup</button>
               </div>
             )}
